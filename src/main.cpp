@@ -72,13 +72,13 @@ void drawFloor()
 {
     glColor3f(0., 0.5, 0.); //Floor colour
 
-    for (int i = -50; i <= 50; i++)
+    for (int i = -100; i <= 100; i++)
     {
         glBegin(GL_LINES); //A set of grid lines on the xz-plane
-        glVertex3f(-50, -0.75, i);
-        glVertex3f(50, -0.75, i);
-        glVertex3f(i, -0.75, -50);
-        glVertex3f(i, -0.75, 50);
+        glVertex3f(-100, -0.75, i);
+        glVertex3f(100, -0.75, i);
+        glVertex3f(i, -0.75, -100);
+        glVertex3f(i, -0.75, 100);
         glEnd();
     }
 }
