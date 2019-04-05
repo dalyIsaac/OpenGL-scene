@@ -21,8 +21,8 @@ float radians_five = 0.0872665;
 float camera_angle = 0;
 
 float eye_x = 0.0;
-float eye_y = 50.0;
-float eye_z = 70.0;
+float eye_y = 10.0;
+float eye_z = 40.0;
 float look_x = eye_x + 100 * sin(camera_angle);
 float look_y = 0.0;
 float look_z = eye_z - 100 * cos(camera_angle);
@@ -34,6 +34,11 @@ float wall_thickness = 6.0;
 bool spaceship_flying = false;
 float spaceship_height = 20.0;
 float spaceship_altitude = 0.0;
+
+bool ball_fired = false;
+float ball_x = 0.0;
+float ball_y = 4.8;
+float ball_z = 24.5;
 
 /**
  * @brief Loads the OFF mesh file.
@@ -102,6 +107,10 @@ void myTimer(int value)
     if (spaceship_flying) {
         spaceship_altitude++;
     }
+    if (ball_fired) {
+        ball_z++;
+        ball_y++;
+    }
     glutPostRedisplay();
     glutTimerFunc(50, myTimer, 0);
 }
@@ -160,6 +169,10 @@ void keyboard(unsigned char key, int x, int y)
         case 'S':
             spaceship_flying = true;
             break;
+        case 'c':
+        case 'C':
+            ball_fired = true;
+            break;
         default:
             break;
     }
@@ -199,6 +212,14 @@ void drawCannon()
         glVertex3d(x[t3[tindx]], y[t3[tindx]], z[t3[tindx]]);
     }
     glEnd();
+}
+
+void cannonBall()
+{
+    glPushMatrix();
+    glTranslatef(ball_x, ball_y, ball_z);
+    glutSolidSphere(0.7, 36, 18);
+    glPopMatrix();
 }
 
 /**
@@ -247,6 +268,8 @@ void cannon()
     glPopMatrix();
 
     glPopMatrix();
+
+    cannonBall();
 }
 
 /**
