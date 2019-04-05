@@ -21,8 +21,8 @@ float radians_five = 0.0872665;
 float camera_angle = 0;
 
 float eye_x = 0.0;
-float eye_y = 5.0;
-float eye_z = 0.0;
+float eye_y = 50.0;
+float eye_z = 70.0;
 float look_x = eye_x + 100 * sin(camera_angle);
 float look_y = 0.0;
 float look_z = eye_z - 100 * cos(camera_angle);
@@ -31,7 +31,9 @@ float tower_height = 35.0;
 float wall_height = 30.0;
 float wall_thickness = 6.0;
 
+bool spaceship_flying = false;
 float spaceship_height = 20.0;
+float spaceship_altitude = 0.0;
 
 /**
  * @brief Loads the OFF mesh file.
@@ -97,13 +99,15 @@ void normal(int tindx)
 
 void myTimer(int value)
 {
-    camera_angle++;
+    if (spaceship_flying) {
+        spaceship_altitude++;
+    }
     glutPostRedisplay();
     glutTimerFunc(50, myTimer, 0);
 }
 
 /**
- * @brief Handles keyboard callbacks.
+ * @brief Handles keyboard input for special keys.
  *
  * @param key
  * @param x
@@ -140,6 +144,25 @@ void special(int key, int x, int y)
     look_z = eye_z - 100 * cos(camera_angle);
 
     glutPostRedisplay();
+}
+
+/**
+ * @brief Handles keyboard input for non-special keys.
+ *
+ * @param key
+ * @param x
+ * @param y
+ */
+void keyboard(unsigned char key, int x, int y)
+{
+    switch (key) {
+        case 's':
+        case 'S':
+            spaceship_flying = true;
+            break;
+        default:
+            break;
+    }
 }
 
 /**
@@ -326,6 +349,17 @@ void castle()
     castleWall(-20.0, 0.0, -20.0, 90.0, 0.0, 1.0, 0.0);
 }
 
+/**
+ * @brief Draws a rocket fin.
+ *
+ * @param translate_x
+ * @param translate_y
+ * @param translate_z
+ * @param angle
+ * @param rotate_x
+ * @param rotate_y
+ * @param rotate_z
+ */
 void fin(GLfloat translate_x = 0.0, GLfloat translate_y = 0.0,
          GLfloat translate_z = 0.0, GLfloat angle = 0.0, GLfloat rotate_x = 0.0,
          GLfloat rotate_y = 0.0, GLfloat rotate_z = 0.0)
@@ -349,7 +383,7 @@ void fin(GLfloat translate_x = 0.0, GLfloat translate_y = 0.0,
 void spaceship()
 {
     glPushMatrix();
-    glTranslatef(0.0, 0.0, -20.0);
+    glTranslatef(0.0, spaceship_altitude, -20.0);
 
     // Fuselage
     glPushMatrix();
@@ -445,7 +479,8 @@ int main(int argc, char** argv)
     glutInitWindowPosition(0, 0);
     glutCreateWindow("COSC363 Assignment 1");
     glutSpecialFunc(special);
-    // glutTimerFunc(50, myTimer, 0);
+    glutKeyboardFunc(keyboard);
+    glutTimerFunc(50, myTimer, 0);
     initialize();
     glutDisplayFunc(display);
     glutMainLoop();
