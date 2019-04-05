@@ -21,8 +21,8 @@ float radians_five = 0.0872665;
 float camera_angle = 0;
 
 float eye_x = 0.0;
-float eye_y = 40.0;
-float eye_z = 70.0;
+float eye_y = 5.0;
+float eye_z = 0.0;
 float look_x = eye_x + 100 * sin(camera_angle);
 float look_y = 0.0;
 float look_z = eye_z - 100 * cos(camera_angle);
@@ -30,6 +30,8 @@ float look_z = eye_z - 100 * cos(camera_angle);
 float tower_height = 35.0;
 float wall_height = 30.0;
 float wall_thickness = 6.0;
+
+float spaceship_height = 20.0;
 
 /**
  * @brief Loads the OFF mesh file.
@@ -324,6 +326,54 @@ void castle()
     castleWall(-20.0, 0.0, -20.0, 90.0, 0.0, 1.0, 0.0);
 }
 
+void fin(GLfloat translate_x = 0.0, GLfloat translate_y = 0.0,
+         GLfloat translate_z = 0.0, GLfloat angle = 0.0, GLfloat rotate_x = 0.0,
+         GLfloat rotate_y = 0.0, GLfloat rotate_z = 0.0)
+{
+    glPushMatrix();
+    // glRotatef(angle, rotate_x, rotate_y, rotate_z);
+    glRotatef(angle, rotate_x, rotate_y, rotate_z);
+    glTranslatef(translate_x, translate_y, translate_z);
+    glBegin(GL_TRIANGLE_STRIP);
+    glVertex3f(0.0, 9.0, 0.0);
+    glVertex3f(0.0, 0.0, 0.0);
+    glVertex3f(5.0, 0.0, 0.0);
+    glEnd();
+    glPopMatrix();
+}
+
+/**
+ * @brief Draws the spaceship.
+ *
+ */
+void spaceship()
+{
+    glPushMatrix();
+    glTranslatef(0.0, 0.0, -20.0);
+
+    // Fuselage
+    glPushMatrix();
+    glTranslatef(0.0, 4.0, 0.0);
+    glRotatef(-90.0, 1.0, 0.0, 0.0);
+    glutSolidCylinder(2.0, spaceship_height, 100.0, 100.0);
+    glPopMatrix();
+
+    // Tower root
+    glPushMatrix();
+    glTranslatef(0.0, 4.0 + spaceship_height, 0.0);
+    glRotatef(-90.0, 1.0, 0.0, 0.0);
+    glutSolidCone(2.0, 6.0, 100.0, 100.0);
+    glPopMatrix();
+
+    glPushMatrix();
+    fin(2.0);
+    fin(2.0, 0.0, 0.0, 120.0, 0.0, 1.0, 0.0);
+    fin(2.0, 0.0, 0.0, 240.0, 0.0, 1.0, 0.0);
+    glPopMatrix();
+
+    glPopMatrix();
+}
+
 /**
  * @brief Contains function calls for generating the scene.
  *
@@ -351,6 +401,7 @@ void display(void)
 
     castle();
     cannon();
+    spaceship();
 
     glFlush();
 }
