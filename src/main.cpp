@@ -224,6 +224,13 @@ void cannon()
     glPopMatrix();
 }
 
+/**
+ * @brief Draws a castle tower, and moves it to the given location.
+ *
+ * @param x Translation distance in the x-direction.
+ * @param y Translation distance in the y-direction.
+ * @param z Translation distance in the z-direction.
+ */
 void castleTower(GLfloat x = 0.0, GLfloat y = 0.0, GLfloat z = 0.0)
 {
     glPushMatrix();
@@ -245,6 +252,18 @@ void castleTower(GLfloat x = 0.0, GLfloat y = 0.0, GLfloat z = 0.0)
     glPopMatrix();
 }
 
+/**
+ * @brief Draws a castle wall, and moves it to the given location, for a given
+ * rotation.
+ *
+ * @param translate_x Translation distance in the x-direction.
+ * @param translate_y Translation distance in the y-direction.
+ * @param translate_z Translation distance in the z-direction.
+ * @param angle The amount to rotate the wall by.
+ * @param rotate_x x-component of the rotation vector.
+ * @param rotate_y y-component of the rotation vector.
+ * @param rotate_z z-component of the rotation vector.
+ */
 void castleWall(GLfloat translate_x = 0.0, GLfloat translate_y = 0.0,
                 GLfloat translate_z = 0.0, GLfloat angle = 0.0,
                 GLfloat rotate_x = 0.0, GLfloat rotate_y = 0.0,
