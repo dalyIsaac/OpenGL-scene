@@ -1,12 +1,20 @@
 #include <cmath>
 #include <GL/freeglut.h>
 
-int cam_hgt = 10;
-float theta = 0;
+float radians_five = 0.0872665;
+
+float cameraAngle = 0;
+
+float eye_x = 0.0;
+float eye_y = 2.0;
+float eye_z = 20.0;
+float look_x = eye_x + 100 * sin(cameraAngle);
+float look_y = 0.0;
+float look_z = eye_z - 100 * cos(cameraAngle);
 
 void myTimer(int value)
 {
-    theta++;
+    cameraAngle++;
     glutPostRedisplay();
     glutTimerFunc(50, myTimer, 0);
 }
@@ -20,14 +28,31 @@ void myTimer(int value)
  */
 void special(int key, int x, int y)
 {
-    if (key == GLUT_KEY_UP)
+    switch (key)
     {
-        cam_hgt++;
+    case GLUT_KEY_UP:
+        // eye_y++;
+        eye_x += 0.1 * sin(cameraAngle);
+        eye_z -= 0.1 * cos(cameraAngle);
+        break;
+    case GLUT_KEY_DOWN:
+        // eye_y--;
+        eye_x -= 0.1 * sin(cameraAngle);
+        eye_z += 0.1 * cos(cameraAngle);
+        break;
+    case GLUT_KEY_LEFT:
+        cameraAngle -= radians_five;
+        break;
+    case GLUT_KEY_RIGHT:
+        cameraAngle += radians_five;
+        break;
+    default:
+        break;
     }
-    else if (key == GLUT_KEY_DOWN)
-    {
-        cam_hgt--;
-    }
+
+    look_x = eye_x + 100 * sin(cameraAngle);
+    look_z = eye_z - 100 * cos(cameraAngle);
+
     glutPostRedisplay();
 }
 
@@ -63,7 +88,7 @@ void display(void)
     glLoadIdentity();
 
     // Camera position and orientation
-    gluLookAt(12 * sin(theta), cam_hgt, 12 * cos(theta), 0, 0, 0, 0, 1, 0);
+    gluLookAt(eye_x, eye_y, eye_z, look_x, look_y, look_z, 0, 1, 0);
 
     // Sets the light's position
     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
