@@ -3,18 +3,22 @@
 
 float radians_five = 0.0872665;
 
-float cameraAngle = 0;
+float camera_angle = 0;
 
 float eye_x = 0.0;
-float eye_y = 2.0;
-float eye_z = 20.0;
-float look_x = eye_x + 100 * sin(cameraAngle);
+float eye_y = 40.0;
+float eye_z = 70.0;
+float look_x = eye_x + 100 * sin(camera_angle);
 float look_y = 0.0;
-float look_z = eye_z - 100 * cos(cameraAngle);
+float look_z = eye_z - 100 * cos(camera_angle);
+
+float tower_height = 35.0;
+float wall_height = 30.0;
+float wall_thickness = 6.0;
 
 void myTimer(int value)
 {
-    cameraAngle++;
+    camera_angle++;
     glutPostRedisplay();
     glutTimerFunc(50, myTimer, 0);
 }
@@ -31,27 +35,31 @@ void special(int key, int x, int y)
     switch (key)
     {
     case GLUT_KEY_UP:
-        // eye_y++;
-        eye_x += 0.1 * sin(cameraAngle);
-        eye_z -= 0.1 * cos(cameraAngle);
+        eye_x += 0.5 * sin(camera_angle);
+        eye_z -= 0.5 * cos(camera_angle);
         break;
     case GLUT_KEY_DOWN:
-        // eye_y--;
-        eye_x -= 0.1 * sin(cameraAngle);
-        eye_z += 0.1 * cos(cameraAngle);
+        eye_x -= 0.5 * sin(camera_angle);
+        eye_z += 0.5 * cos(camera_angle);
         break;
     case GLUT_KEY_LEFT:
-        cameraAngle -= radians_five;
+        camera_angle -= radians_five;
         break;
     case GLUT_KEY_RIGHT:
-        cameraAngle += radians_five;
+        camera_angle += radians_five;
+        break;
+    case GLUT_KEY_PAGE_UP:
+        eye_y++;
+        break;
+    case GLUT_KEY_PAGE_DOWN:
+        eye_y--;
         break;
     default:
         break;
     }
 
-    look_x = eye_x + 100 * sin(cameraAngle);
-    look_z = eye_z - 100 * cos(cameraAngle);
+    look_x = eye_x + 100 * sin(camera_angle);
+    look_z = eye_z - 100 * cos(camera_angle);
 
     glutPostRedisplay();
 }
@@ -73,6 +81,58 @@ void drawFloor()
         glVertex3f(i, -0.75, 50);
         glEnd();
     }
+}
+
+void castle()
+{
+    // Left column
+    glPushMatrix();
+    glTranslatef(20.0, 0.0, 0.0);
+    glRotatef(-90.0, 1.0, 0.0, 0.0);
+    glutSolidCylinder(5.0, tower_height, 100.0, 100.0);
+    glPopMatrix();
+
+    // Left tower roof
+    glPushMatrix();
+    glTranslatef(20.0, tower_height, 0.0);
+    glRotatef(-90.0, 1.0, 0.0, 0.0);
+    glutSolidCone(7.0, 10.0, 100.0, 100.0);
+    glPopMatrix();
+
+    // Right column
+    glPushMatrix();
+    glTranslatef(-20.0, 0.0, 0.0);
+    glRotatef(-90.0, 1.0, 0.0, 0.0);
+    glutSolidCylinder(5.0, tower_height, 100.0, 100.0);
+    glPopMatrix();
+
+    // Right tower roof
+    glPushMatrix();
+    glTranslatef(-20.0, tower_height, 0.0);
+    glRotatef(-90.0, 1.0, 0.0, 0.0);
+    glutSolidCone(7.0, 10.0, 100.0, 100.0);
+    glPopMatrix();
+
+    // Left front wall
+    glPushMatrix();
+    glTranslatef(-10.0, wall_height / 2, 0.0);
+    glScalef(10.0, wall_height, wall_thickness);
+    glutSolidCube(1.0);
+    glPopMatrix();
+
+    // Right front wall
+    glPushMatrix();
+    glTranslatef(10.0, wall_height / 2, 0.0);
+    glScalef(10.0, wall_height, wall_thickness);
+    glutSolidCube(1.0);
+    glPopMatrix();
+
+    // Front wall top
+    glPushMatrix();
+    glTranslatef(0.0, 3 * wall_height / 4, 0.0);
+    glScalef(10.0, wall_height / 2, wall_thickness);
+    glutSolidCube(1.0);
+    glPopMatrix();
 }
 
 /**
@@ -100,15 +160,7 @@ void display(void)
     // Enables lighting when drawing the scene
     glEnable(GL_LIGHTING);
 
-    glPushMatrix();
-    glutSolidTeapot(1.0);
-    glPopMatrix();
-
-    glPushMatrix();
-    glTranslatef(5.0, 0.0, 0.0);
-    glRotatef(90.0, 1.0, 0.0, 0.0);
-    glutSolidCylinder(1.0, 1.0, 100.0, 100.0);
-    glPopMatrix();
+    castle();
 
     glFlush();
 }
