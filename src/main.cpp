@@ -99,8 +99,16 @@ void display(void)
 
     // Enables lighting when drawing the scene
     glEnable(GL_LIGHTING);
-    glColor3f(0.0, 1.0, 1.0);
+
+    glPushMatrix();
     glutSolidTeapot(1.0);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(5.0, 0.0, 0.0);
+    glRotatef(90.0, 1.0, 0.0, 0.0);
+    glutSolidCylinder(1.0, 1.0, 100.0, 100.0);
+    glPopMatrix();
 
     glFlush();
 }
@@ -136,7 +144,7 @@ int main(int argc, char **argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);
-    glutInitWindowSize(600, 600);
+    glutInitWindowSize(1000, 1000);
     glutInitWindowPosition(0, 0);
     glutCreateWindow("COSC363 Assignment 1");
     glutSpecialFunc(special);
