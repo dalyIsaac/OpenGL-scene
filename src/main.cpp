@@ -22,8 +22,8 @@ static double radians_five = 0.0872665;
 static double camera_angle = 0;
 
 static double eye_x = 0.0;
-static double eye_y = 50.0;
-static double eye_z = 70.0;
+static double eye_y = 200.0;
+static double eye_z = 30.0;
 static double look_x = 0;
 static double look_y = 0.0;
 static double look_z = 1;
