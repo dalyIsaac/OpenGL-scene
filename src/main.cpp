@@ -1,3 +1,4 @@
+#include "robot.h"
 #include <GL/freeglut.h>
 #include <climits>
 #include <cmath>
@@ -39,12 +40,6 @@ static bool ball_fired = false;
 static double ball_x = 0.0;
 static double ball_y = 4.8;
 static double ball_z = 24.5;
-
-static double robot_angle = 0.0;
-static double robot_limb_angle = 0.0;
-static double robot_x = 0.0;
-static double robot_y = 0.0;
-static double robot_z = 10.0;
 
 /**
  * @brief Loads the OFF mesh file.
@@ -109,34 +104,6 @@ void normal(int tindx) {
   glNormal3d(nx, ny, nz);
 }
 
-/**
- * @brief Moves the robot.
- *
- */
-void robotMovement(void) {
-  robot_limb_angle += 15;
-  if (robot_limb_angle >= 45.0) {
-    robot_limb_angle = -45.0;
-  }
-  if (robot_x == 30.0 && robot_z <= 10.0 && robot_z > -50) {
-    // Move up
-    robot_z--;
-    robot_angle = 180.0;
-  } else if (robot_x <= 30.0 && robot_x > -30.0 && robot_z == -50.0) {
-    // Move to the left
-    robot_x--;
-    robot_angle = 270.0;
-  } else if (robot_x == -30.0 && robot_z >= -50.0 && robot_z < 10.0) {
-    // Move down
-    robot_z++;
-    robot_angle = 0.0;
-  } else if (robot_x >= -30.0 && robot_x < 30.0 && robot_z == 10.0) {
-    // Move to the right
-    robot_x++;
-    robot_angle = 90.0;
-  }
-}
-
 void myTimer(int value) {
   if (spaceship_flying) {
     spaceship_altitude++;
@@ -145,7 +112,11 @@ void myTimer(int value) {
     ball_z++;
     ball_y++;
   }
-  robotMovement();
+  for (int i = 0; i < ROBOTS_LENGTH; i++) {
+    Robot *r = &(robots[i]);
+    r->movement(r);
+  }
+
   glutPostRedisplay();
   glutTimerFunc(50, myTimer, 0);
 }
@@ -460,77 +431,6 @@ void spaceship(void) {
 }
 
 /**
- * @brief Draws a single robot.
- *
- */
-void robot(void) {
-  glPushMatrix();
-  glTranslated(robot_x, robot_y, robot_z);
-  glRotated(robot_angle, 0.0, 1.0, 0.0);
-
-  // Head
-  glColor3d(1.0, 0.78, 0.06);
-  glPushMatrix();
-  glTranslated(0, 7.7, 0);
-  glutSolidCube(1.4);
-  glPopMatrix();
-
-  // Torso
-  glColor3d(1.0, 0.0, 0.);
-  glPushMatrix();
-  glTranslated(0, 5.5, 0);
-  glScaled(3, 3, 1.4);
-  glutSolidCube(1);
-  glPopMatrix();
-
-  // Right leg
-  glColor3d(0.0, 0.0, 1.);
-  glPushMatrix();
-  glTranslated(-0.8, 4.0, 0);
-  glRotated(-robot_limb_angle, 1, 0, 0);
-  glTranslated(0.8, -4.0, 0);
-  glTranslated(-0.8, 2.2, 0);
-  glScaled(1, 4.4, 1);
-  glutSolidCube(1);
-  glPopMatrix();
-
-  // Left leg
-  glColor3d(0.0, 0.0, 1.);
-  glPushMatrix();
-  glTranslated(0.8, 4.0, 0.0);
-  glRotated(robot_limb_angle, 1, 0, 0);
-  glTranslated(-0.8, -4, 0);
-  glTranslated(0.8, 2.2, 0);
-  glScaled(1, 4.4, 1);
-  glutSolidCube(1);
-  glPopMatrix();
-
-  // Right arm
-  glColor3d(0.0, 0.0, 1.);
-  glPushMatrix();
-  glTranslated(-2, 6.5, 0);
-  glRotated(robot_limb_angle, 1, 0, 0);
-  glTranslated(2, -6.5, 0);
-  glTranslated(-2, 5, 0);
-  glScaled(1, 4, 1);
-  glutSolidCube(1);
-  glPopMatrix();
-
-  // Left arm
-  glColor3d(0.0, 0.0, 1.);
-  glPushMatrix();
-  glTranslated(2, 6.5, 0);
-  glRotated(-robot_limb_angle, 1, 0, 0);
-  glTranslated(-2, -6.5, 0);
-  glTranslated(2, 5, 0);
-  glScaled(1, 4, 1);
-  glutSolidCube(1);
-  glPopMatrix();
-
-  glPopMatrix();
-}
-
-/**
  * @brief Contains function calls for generating the scene.
  *
  */
@@ -557,7 +457,10 @@ void display(void) {
   castle();
   cannon();
   spaceship();
-  robot();
+  for (int i = 0; i < ROBOTS_LENGTH; i++) {
+    Robot r = robots[i];
+    draw_robot(r);
+  }
 
   glFlush();
 }
