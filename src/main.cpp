@@ -21,8 +21,8 @@ float radians_five = 0.0872665;
 float camera_angle = 0;
 
 float eye_x = 0.0;
-float eye_y = 10.0;
-float eye_z = 40.0;
+float eye_y = 50.0;
+float eye_z = 70.0;
 float look_x = eye_x + 100 * sin(camera_angle);
 float look_y = 0.0;
 float look_z = eye_z - 100 * cos(camera_angle);
@@ -39,6 +39,11 @@ bool ball_fired = false;
 float ball_x = 0.0;
 float ball_y = 4.8;
 float ball_z = 24.5;
+
+float robot_angle = 0.0;
+float robot_x = 0.0;
+float robot_y = 0.0;
+float robot_z = 10.0;
 
 /**
  * @brief Loads the OFF mesh file.
@@ -100,6 +105,26 @@ void normal(int tindx) {
   glNormal3f(nx, ny, nz);
 }
 
+/**
+ * @brief Moves the robot.
+ *
+ */
+void robotMovement(void) {
+  if (robot_x == 30.0 && robot_z <= 10.0 && robot_z > -50) {
+    // Move up
+    robot_z--;
+  } else if (robot_x <= 30.0 && robot_x > -30.0 && robot_z == -50.0) {
+    // Move to the left
+    robot_x--;
+  } else if (robot_x == -30.0 && robot_z >= -50.0 && robot_z < 10.0) {
+    // Move down
+    robot_z++;
+  } else if (robot_x >= -30.0 && robot_x < 30.0 && robot_z == 10.0) {
+    // Move to the right
+    robot_x++;
+  }
+}
+
 void myTimer(int value) {
   if (spaceship_flying) {
     spaceship_altitude++;
@@ -108,6 +133,7 @@ void myTimer(int value) {
     ball_z++;
     ball_y++;
   }
+  robotMovement();
   glutPostRedisplay();
   glutTimerFunc(50, myTimer, 0);
 }
@@ -418,6 +444,76 @@ void spaceship() {
 }
 
 /**
+ * @brief Draws a single robot.
+ *
+ */
+void robot(void) {
+  glPushMatrix();
+  glTranslatef(robot_x, robot_y, robot_z);
+
+  // Head
+  glColor3f(1.0, 0.78, 0.06);
+  glPushMatrix();
+  glTranslatef(0, 7.7, 0);
+  glutSolidCube(1.4);
+  glPopMatrix();
+
+  // Torso
+  glColor3f(1.0, 0.0, 0.);
+  glPushMatrix();
+  glTranslatef(0, 5.5, 0);
+  glScalef(3, 3, 1.4);
+  glutSolidCube(1);
+  glPopMatrix();
+
+  // Right leg
+  glColor3f(0.0, 0.0, 1.);
+  glPushMatrix();
+  glTranslatef(-0.8, 4.0, 0);
+  glRotatef(-robot_angle, 1, 0, 0);
+  glTranslatef(0.8, -4.0, 0);
+  glTranslatef(-0.8, 2.2, 0);
+  glScalef(1, 4.4, 1);
+  glutSolidCube(1);
+  glPopMatrix();
+
+  // Left leg
+  glColor3f(0.0, 0.0, 1.);
+  glPushMatrix();
+  glTranslatef(0.8, 4.0, 0.0);
+  glRotatef(robot_angle, 1, 0, 0);
+  glTranslatef(-0.8, -4, 0);
+  glTranslatef(0.8, 2.2, 0);
+  glScalef(1, 4.4, 1);
+  glutSolidCube(1);
+  glPopMatrix();
+
+  // Right arm
+  glColor3f(0.0, 0.0, 1.);
+  glPushMatrix();
+  glTranslatef(-2, 6.5, 0);
+  glRotatef(robot_angle, 1, 0, 0);
+  glTranslatef(2, -6.5, 0);
+  glTranslatef(-2, 5, 0);
+  glScalef(1, 4, 1);
+  glutSolidCube(1);
+  glPopMatrix();
+
+  // Left arm
+  glColor3f(0.0, 0.0, 1.);
+  glPushMatrix();
+  glTranslatef(2, 6.5, 0);
+  glRotatef(-robot_angle, 1, 0, 0);
+  glTranslatef(-2, -6.5, 0);
+  glTranslatef(2, 5, 0);
+  glScalef(1, 4, 1);
+  glutSolidCube(1);
+  glPopMatrix();
+
+  glPopMatrix();
+}
+
+/**
  * @brief Contains function calls for generating the scene.
  *
  */
@@ -444,6 +540,7 @@ void display(void) {
   castle();
   cannon();
   spaceship();
+  robot();
 
   glFlush();
 }
