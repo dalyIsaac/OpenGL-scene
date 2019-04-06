@@ -5,9 +5,9 @@
 #include <iostream>
 using namespace std;
 
-float *x;
-float *y;
-float *z;
+float *x_cannon_mesh;
+float *y_cannon_mesh;
+float *z_cannon_mesh;
 
 int *t1;
 int *t2;
@@ -65,16 +65,16 @@ void loadMeshFile(const char *fname) {
   fp_in >> num_vertices >> num_triangles >>
       ne; // read number of vertices, polygons, edges
 
-  x = new float[num_vertices]; // create arrays
-  y = new float[num_vertices];
-  z = new float[num_vertices];
+  x_cannon_mesh = new float[num_vertices]; // create arrays
+  y_cannon_mesh = new float[num_vertices];
+  z_cannon_mesh = new float[num_vertices];
 
   t1 = new int[num_triangles];
   t2 = new int[num_triangles];
   t3 = new int[num_triangles];
 
   for (int i = 0; i < num_vertices; i++) // read vertex list
-    fp_in >> x[i] >> y[i] >> z[i];
+    fp_in >> x_cannon_mesh[i] >> y_cannon_mesh[i] >> z_cannon_mesh[i];
 
   for (int i = 0; i < num_triangles; i++) // read polygon list
   {
@@ -96,9 +96,12 @@ void loadMeshFile(const char *fname) {
  * @param tindx
  */
 void normal(int tindx) {
-  float x1 = x[t1[tindx]], x2 = x[t2[tindx]], x3 = x[t3[tindx]];
-  float y1 = y[t1[tindx]], y2 = y[t2[tindx]], y3 = y[t3[tindx]];
-  float z1 = z[t1[tindx]], z2 = z[t2[tindx]], z3 = z[t3[tindx]];
+  float x1 = x_cannon_mesh[t1[tindx]], x2 = x_cannon_mesh[t2[tindx]],
+        x3 = x_cannon_mesh[t3[tindx]];
+  float y1 = y_cannon_mesh[t1[tindx]], y2 = y_cannon_mesh[t2[tindx]],
+        y3 = y_cannon_mesh[t3[tindx]];
+  float z1 = z_cannon_mesh[t1[tindx]], z2 = z_cannon_mesh[t2[tindx]],
+        z3 = z_cannon_mesh[t3[tindx]];
   float nx, ny, nz;
   nx = y1 * (z2 - z3) + y2 * (z3 - z1) + y3 * (z1 - z2);
   ny = z1 * (x2 - x3) + z2 * (x3 - x1) + z3 * (x1 - x2);
@@ -235,9 +238,12 @@ void drawCannon() {
   glBegin(GL_TRIANGLES);
   for (int tindx = 0; tindx < num_triangles; tindx++) {
     normal(tindx);
-    glVertex3d(x[t1[tindx]], y[t1[tindx]], z[t1[tindx]]);
-    glVertex3d(x[t2[tindx]], y[t2[tindx]], z[t2[tindx]]);
-    glVertex3d(x[t3[tindx]], y[t3[tindx]], z[t3[tindx]]);
+    glVertex3d(x_cannon_mesh[t1[tindx]], y_cannon_mesh[t1[tindx]],
+               z_cannon_mesh[t1[tindx]]);
+    glVertex3d(x_cannon_mesh[t2[tindx]], y_cannon_mesh[t2[tindx]],
+               z_cannon_mesh[t2[tindx]]);
+    glVertex3d(x_cannon_mesh[t3[tindx]], y_cannon_mesh[t3[tindx]],
+               z_cannon_mesh[t3[tindx]]);
   }
   glEnd();
 }
