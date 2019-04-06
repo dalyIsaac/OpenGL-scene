@@ -23,9 +23,9 @@ double camera_angle = 0;
 double eye_x = 0.0;
 double eye_y = 50.0;
 double eye_z = 70.0;
-double look_x = eye_x + 100 * sin(camera_angle);
+double look_x = 0;
 double look_y = 0.0;
-double look_z = eye_z - 100 * cos(camera_angle);
+double look_z = 1;
 
 double tower_height = 35.0;
 double wall_height = 30.0;
