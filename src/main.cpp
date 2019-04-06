@@ -5,46 +5,46 @@
 #include <iostream>
 using namespace std;
 
-double *x_cannon_mesh;
-double *y_cannon_mesh;
-double *z_cannon_mesh;
+static double *x_cannon_mesh;
+static double *y_cannon_mesh;
+static double *z_cannon_mesh;
 
-int *t1;
-int *t2;
-int *t3;
+static int *t1;
+static int *t2;
+static int *t3;
 
-int num_vertices;
-int num_triangles;
+static int num_vertices;
+static int num_triangles;
 
-double radians_five = 0.0872665;
+static double radians_five = 0.0872665;
 
-double camera_angle = 0;
+static double camera_angle = 0;
 
-double eye_x = 0.0;
-double eye_y = 50.0;
-double eye_z = 70.0;
-double look_x = eye_x + 100 * sin(camera_angle);
-double look_y = 0.0;
-double look_z = eye_z - 100 * cos(camera_angle);
+static double eye_x = 0.0;
+static double eye_y = 50.0;
+static double eye_z = 70.0;
+static double look_x = 0;
+static double look_y = 0.0;
+static double look_z = 1;
 
-double tower_height = 35.0;
-double wall_height = 30.0;
-double wall_thickness = 6.0;
+static double tower_height = 35.0;
+static double wall_height = 30.0;
+static double wall_thickness = 6.0;
 
-bool spaceship_flying = false;
-double spaceship_height = 20.0;
-double spaceship_altitude = 0.0;
+static bool spaceship_flying = false;
+static double spaceship_height = 20.0;
+static double spaceship_altitude = 0.0;
 
-bool ball_fired = false;
-double ball_x = 0.0;
-double ball_y = 4.8;
-double ball_z = 24.5;
+static bool ball_fired = false;
+static double ball_x = 0.0;
+static double ball_y = 4.8;
+static double ball_z = 24.5;
 
-double robot_angle = 0.0;
-double robot_limb_angle = 0.0;
-double robot_x = 0.0;
-double robot_y = 0.0;
-double robot_z = 10.0;
+static double robot_angle = 0.0;
+static double robot_limb_angle = 0.0;
+static double robot_x = 0.0;
+static double robot_y = 0.0;
+static double robot_z = 10.0;
 
 /**
  * @brief Loads the OFF mesh file.
