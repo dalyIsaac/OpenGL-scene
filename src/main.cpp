@@ -5,9 +5,9 @@
 #include <iostream>
 using namespace std;
 
-float *x_cannon_mesh;
-float *y_cannon_mesh;
-float *z_cannon_mesh;
+double *x_cannon_mesh;
+double *y_cannon_mesh;
+double *z_cannon_mesh;
 
 int *t1;
 int *t2;
@@ -16,35 +16,35 @@ int *t3;
 int num_vertices;
 int num_triangles;
 
-float radians_five = 0.0872665;
+double radians_five = 0.0872665;
 
-float camera_angle = 0;
+double camera_angle = 0;
 
-float eye_x = 0.0;
-float eye_y = 50.0;
-float eye_z = 70.0;
-float look_x = eye_x + 100 * sin(camera_angle);
-float look_y = 0.0;
-float look_z = eye_z - 100 * cos(camera_angle);
+double eye_x = 0.0;
+double eye_y = 50.0;
+double eye_z = 70.0;
+double look_x = eye_x + 100 * sin(camera_angle);
+double look_y = 0.0;
+double look_z = eye_z - 100 * cos(camera_angle);
 
-float tower_height = 35.0;
-float wall_height = 30.0;
-float wall_thickness = 6.0;
+double tower_height = 35.0;
+double wall_height = 30.0;
+double wall_thickness = 6.0;
 
 bool spaceship_flying = false;
-float spaceship_height = 20.0;
-float spaceship_altitude = 0.0;
+double spaceship_height = 20.0;
+double spaceship_altitude = 0.0;
 
 bool ball_fired = false;
-float ball_x = 0.0;
-float ball_y = 4.8;
-float ball_z = 24.5;
+double ball_x = 0.0;
+double ball_y = 4.8;
+double ball_z = 24.5;
 
-float robot_angle = 0.0;
-float robot_limb_angle = 0.0;
-float robot_x = 0.0;
-float robot_y = 0.0;
-float robot_z = 10.0;
+double robot_angle = 0.0;
+double robot_limb_angle = 0.0;
+double robot_x = 0.0;
+double robot_y = 0.0;
+double robot_z = 10.0;
 
 /**
  * @brief Loads the OFF mesh file.
@@ -65,9 +65,9 @@ void loadMeshFile(const char *fname) {
   fp_in >> num_vertices >> num_triangles >>
       ne; // read number of vertices, polygons, edges
 
-  x_cannon_mesh = new float[num_vertices]; // create arrays
-  y_cannon_mesh = new float[num_vertices];
-  z_cannon_mesh = new float[num_vertices];
+  x_cannon_mesh = new double[num_vertices]; // create arrays
+  y_cannon_mesh = new double[num_vertices];
+  z_cannon_mesh = new double[num_vertices];
 
   t1 = new int[num_triangles];
   t2 = new int[num_triangles];
@@ -96,17 +96,17 @@ void loadMeshFile(const char *fname) {
  * @param tindx
  */
 void normal(int tindx) {
-  float x1 = x_cannon_mesh[t1[tindx]], x2 = x_cannon_mesh[t2[tindx]],
-        x3 = x_cannon_mesh[t3[tindx]];
-  float y1 = y_cannon_mesh[t1[tindx]], y2 = y_cannon_mesh[t2[tindx]],
-        y3 = y_cannon_mesh[t3[tindx]];
-  float z1 = z_cannon_mesh[t1[tindx]], z2 = z_cannon_mesh[t2[tindx]],
-        z3 = z_cannon_mesh[t3[tindx]];
-  float nx, ny, nz;
+  double x1 = x_cannon_mesh[t1[tindx]], x2 = x_cannon_mesh[t2[tindx]],
+         x3 = x_cannon_mesh[t3[tindx]];
+  double y1 = y_cannon_mesh[t1[tindx]], y2 = y_cannon_mesh[t2[tindx]],
+         y3 = y_cannon_mesh[t3[tindx]];
+  double z1 = z_cannon_mesh[t1[tindx]], z2 = z_cannon_mesh[t2[tindx]],
+         z3 = z_cannon_mesh[t3[tindx]];
+  double nx, ny, nz;
   nx = y1 * (z2 - z3) + y2 * (z3 - z1) + y3 * (z1 - z2);
   ny = z1 * (x2 - x3) + z2 * (x3 - x1) + z3 * (x1 - x2);
   nz = x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2);
-  glNormal3f(nx, ny, nz);
+  glNormal3d(nx, ny, nz);
 }
 
 /**
@@ -215,8 +215,8 @@ void keyboard(unsigned char key, int x, int y) {
  * @brief Draws a grid of lines on the floor plane.
  *
  */
-void drawFloor() {
-  glColor3f(0., 0.5, 0.); // Floor colour
+void drawFloor(void) {
+  glColor3d(0., 0.5, 0.); // Floor colour
 
   for (int i = -100; i <= 100; i++) {
     glBegin(GL_LINES); // A set of grid lines on the xz-plane
@@ -232,8 +232,8 @@ void drawFloor() {
  * @brief Draws the cannon.
  *
  */
-void drawCannon() {
-  glColor3f(0.4, 0.5, 0.4);
+void drawCannon(void) {
+  glColor3d(0.4, 0.5, 0.4);
 
   glBegin(GL_TRIANGLES);
   for (int tindx = 0; tindx < num_triangles; tindx++) {
@@ -248,9 +248,9 @@ void drawCannon() {
   glEnd();
 }
 
-void cannonBall() {
+void cannonBall(void) {
   glPushMatrix();
-  glTranslatef(ball_x, ball_y, ball_z);
+  glTranslated(ball_x, ball_y, ball_z);
   glutSolidSphere(0.7, 36, 18);
   glPopMatrix();
 }
@@ -259,43 +259,43 @@ void cannonBall() {
  * @brief Draws the castle, and it's constituent supports.
  *
  */
-void cannon() {
+void cannon(void) {
   glPushMatrix();
   // Global transitions
-  glTranslatef(0.0, 0.0, 20.0);
-  glRotatef(-90.0, 0.0, 1.0, 0.0);
-  glScalef(0.1, 0.1, 0.1);
+  glTranslated(0.0, 0.0, 20.0);
+  glRotated(-90.0, 0.0, 1.0, 0.0);
+  glScaled(0.1, 0.1, 0.1);
 
   // Cannon
   glPushMatrix();
-  glTranslatef(-20.0, 30.0, 0);
-  glRotatef(15.0, 0, 0, 1);
-  glTranslatef(20.0, -30.0, 0);
+  glTranslated(-20.0, 30.0, 0);
+  glRotated(15.0, 0, 0, 1);
+  glTranslated(20.0, -30.0, 0);
   drawCannon();
   glPopMatrix();
 
   // Supports
   glPushMatrix();
-  glTranslatef(-10.0, 5.0, 17.0);
-  glScalef(80.0, 10.0, 6.0);
+  glTranslated(-10.0, 5.0, 17.0);
+  glScaled(80.0, 10.0, 6.0);
   glutSolidCube(1);
   glPopMatrix();
 
   glPushMatrix();
-  glTranslatef(-20.0, 25.0, 17.0);
-  glScalef(40.0, 30.0, 6.0);
+  glTranslated(-20.0, 25.0, 17.0);
+  glScaled(40.0, 30.0, 6.0);
   glutSolidCube(1);
   glPopMatrix();
 
   glPushMatrix();
-  glTranslatef(-10.0, 5.0, -17.0);
-  glScalef(80.0, 10.0, 6.0);
+  glTranslated(-10.0, 5.0, -17.0);
+  glScaled(80.0, 10.0, 6.0);
   glutSolidCube(1);
   glPopMatrix();
 
   glPushMatrix();
-  glTranslatef(-20.0, 25.0, -17.0);
-  glScalef(40.0, 30.0, 6.0);
+  glTranslated(-20.0, 25.0, -17.0);
+  glScaled(40.0, 30.0, 6.0);
   glutSolidCube(1);
   glPopMatrix();
 
@@ -311,20 +311,20 @@ void cannon() {
  * @param y Translation distance in the y-direction.
  * @param z Translation distance in the z-direction.
  */
-void castleTower(GLfloat x = 0.0, GLfloat y = 0.0, GLfloat z = 0.0) {
+void castleTower(GLdouble x = 0.0, GLdouble y = 0.0, GLdouble z = 0.0) {
   glPushMatrix();
-  glTranslatef(x, y, z);
+  glTranslated(x, y, z);
 
   // Tower base
   glPushMatrix();
-  glRotatef(-90.0, 1.0, 0.0, 0.0);
+  glRotated(-90.0, 1.0, 0.0, 0.0);
   glutSolidCylinder(5.0, tower_height, 100.0, 100.0);
   glPopMatrix();
 
   // Tower root
   glPushMatrix();
-  glTranslatef(0.0, tower_height, 0.0);
-  glRotatef(-90.0, 1.0, 0.0, 0.0);
+  glTranslated(0.0, tower_height, 0.0);
+  glRotated(-90.0, 1.0, 0.0, 0.0);
   glutSolidCone(7.0, 10.0, 100.0, 100.0);
   glPopMatrix();
 
@@ -343,32 +343,32 @@ void castleTower(GLfloat x = 0.0, GLfloat y = 0.0, GLfloat z = 0.0) {
  * @param rotate_y y-component of the rotation vector.
  * @param rotate_z z-component of the rotation vector.
  */
-void castleWall(GLfloat translate_x = 0.0, GLfloat translate_y = 0.0,
-                GLfloat translate_z = 0.0, GLfloat angle = 0.0,
-                GLfloat rotate_x = 0.0, GLfloat rotate_y = 0.0,
-                GLfloat rotate_z = 0.0) {
+void castleWall(GLdouble translate_x = 0.0, GLdouble translate_y = 0.0,
+                GLdouble translate_z = 0.0, GLdouble angle = 0.0,
+                GLdouble rotate_x = 0.0, GLdouble rotate_y = 0.0,
+                GLdouble rotate_z = 0.0) {
   glPushMatrix();
-  glTranslatef(translate_x, translate_y, translate_z);
-  glRotatef(angle, rotate_x, rotate_y, rotate_z);
+  glTranslated(translate_x, translate_y, translate_z);
+  glRotated(angle, rotate_x, rotate_y, rotate_z);
 
   // Left front wall
   glPushMatrix();
-  glTranslatef(-12.5, wall_height / 2, 0.0);
-  glScalef(15.0, wall_height, wall_thickness);
+  glTranslated(-12.5, wall_height / 2, 0.0);
+  glScaled(15.0, wall_height, wall_thickness);
   glutSolidCube(1.0);
   glPopMatrix();
 
   // Right front wall
   glPushMatrix();
-  glTranslatef(12.5, wall_height / 2, 0.0);
-  glScalef(15.0, wall_height, wall_thickness);
+  glTranslated(12.5, wall_height / 2, 0.0);
+  glScaled(15.0, wall_height, wall_thickness);
   glutSolidCube(1.0);
   glPopMatrix();
 
   // Front wall top
   glPushMatrix();
-  glTranslatef(0.0, 3 * wall_height / 4, 0.0);
-  glScalef(10.0, wall_height / 2, wall_thickness);
+  glTranslated(0.0, 3 * wall_height / 4, 0.0);
+  glScaled(10.0, wall_height / 2, wall_thickness);
   glutSolidCube(1.0);
   glPopMatrix();
 
@@ -379,7 +379,7 @@ void castleWall(GLfloat translate_x = 0.0, GLfloat translate_y = 0.0,
  * @brief Draws the castle.
  *
  */
-void castle() {
+void castle(void) {
   // Right front tower
   castleTower(20.0);
   // Front
@@ -412,13 +412,14 @@ void castle() {
  * @param rotate_y
  * @param rotate_z
  */
-void fin(GLfloat translate_x = 0.0, GLfloat translate_y = 0.0,
-         GLfloat translate_z = 0.0, GLfloat angle = 0.0, GLfloat rotate_x = 0.0,
-         GLfloat rotate_y = 0.0, GLfloat rotate_z = 0.0) {
+void fin(GLdouble translate_x = 0.0, GLdouble translate_y = 0.0,
+         GLdouble translate_z = 0.0, GLdouble angle = 0.0,
+         GLdouble rotate_x = 0.0, GLdouble rotate_y = 0.0,
+         GLdouble rotate_z = 0.0) {
   glPushMatrix();
-  // glRotatef(angle, rotate_x, rotate_y, rotate_z);
-  glRotatef(angle, rotate_x, rotate_y, rotate_z);
-  glTranslatef(translate_x, translate_y, translate_z);
+  // glRotated(angle, rotate_x, rotate_y, rotate_z);
+  glRotated(angle, rotate_x, rotate_y, rotate_z);
+  glTranslated(translate_x, translate_y, translate_z);
   glBegin(GL_TRIANGLE_STRIP);
   glVertex3f(0.0, 9.0, 0.0);
   glVertex3f(0.0, 0.0, 0.0);
@@ -431,21 +432,21 @@ void fin(GLfloat translate_x = 0.0, GLfloat translate_y = 0.0,
  * @brief Draws the spaceship.
  *
  */
-void spaceship() {
+void spaceship(void) {
   glPushMatrix();
-  glTranslatef(0.0, spaceship_altitude, -20.0);
+  glTranslated(0.0, spaceship_altitude, -20.0);
 
   // Fuselage
   glPushMatrix();
-  glTranslatef(0.0, 4.0, 0.0);
-  glRotatef(-90.0, 1.0, 0.0, 0.0);
+  glTranslated(0.0, 4.0, 0.0);
+  glRotated(-90.0, 1.0, 0.0, 0.0);
   glutSolidCylinder(2.0, spaceship_height, 100.0, 100.0);
   glPopMatrix();
 
   // Tower root
   glPushMatrix();
-  glTranslatef(0.0, 4.0 + spaceship_height, 0.0);
-  glRotatef(-90.0, 1.0, 0.0, 0.0);
+  glTranslated(0.0, 4.0 + spaceship_height, 0.0);
+  glRotated(-90.0, 1.0, 0.0, 0.0);
   glutSolidCone(2.0, 6.0, 100.0, 100.0);
   glPopMatrix();
 
@@ -464,65 +465,65 @@ void spaceship() {
  */
 void robot(void) {
   glPushMatrix();
-  glTranslatef(robot_x, robot_y, robot_z);
-  glRotatef(robot_angle, 0.0, 1.0, 0.0);
+  glTranslated(robot_x, robot_y, robot_z);
+  glRotated(robot_angle, 0.0, 1.0, 0.0);
 
   // Head
-  glColor3f(1.0, 0.78, 0.06);
+  glColor3d(1.0, 0.78, 0.06);
   glPushMatrix();
-  glTranslatef(0, 7.7, 0);
+  glTranslated(0, 7.7, 0);
   glutSolidCube(1.4);
   glPopMatrix();
 
   // Torso
-  glColor3f(1.0, 0.0, 0.);
+  glColor3d(1.0, 0.0, 0.);
   glPushMatrix();
-  glTranslatef(0, 5.5, 0);
-  glScalef(3, 3, 1.4);
+  glTranslated(0, 5.5, 0);
+  glScaled(3, 3, 1.4);
   glutSolidCube(1);
   glPopMatrix();
 
   // Right leg
-  glColor3f(0.0, 0.0, 1.);
+  glColor3d(0.0, 0.0, 1.);
   glPushMatrix();
-  glTranslatef(-0.8, 4.0, 0);
-  glRotatef(-robot_limb_angle, 1, 0, 0);
-  glTranslatef(0.8, -4.0, 0);
-  glTranslatef(-0.8, 2.2, 0);
-  glScalef(1, 4.4, 1);
+  glTranslated(-0.8, 4.0, 0);
+  glRotated(-robot_limb_angle, 1, 0, 0);
+  glTranslated(0.8, -4.0, 0);
+  glTranslated(-0.8, 2.2, 0);
+  glScaled(1, 4.4, 1);
   glutSolidCube(1);
   glPopMatrix();
 
   // Left leg
-  glColor3f(0.0, 0.0, 1.);
+  glColor3d(0.0, 0.0, 1.);
   glPushMatrix();
-  glTranslatef(0.8, 4.0, 0.0);
-  glRotatef(robot_limb_angle, 1, 0, 0);
-  glTranslatef(-0.8, -4, 0);
-  glTranslatef(0.8, 2.2, 0);
-  glScalef(1, 4.4, 1);
+  glTranslated(0.8, 4.0, 0.0);
+  glRotated(robot_limb_angle, 1, 0, 0);
+  glTranslated(-0.8, -4, 0);
+  glTranslated(0.8, 2.2, 0);
+  glScaled(1, 4.4, 1);
   glutSolidCube(1);
   glPopMatrix();
 
   // Right arm
-  glColor3f(0.0, 0.0, 1.);
+  glColor3d(0.0, 0.0, 1.);
   glPushMatrix();
-  glTranslatef(-2, 6.5, 0);
-  glRotatef(robot_limb_angle, 1, 0, 0);
-  glTranslatef(2, -6.5, 0);
-  glTranslatef(-2, 5, 0);
-  glScalef(1, 4, 1);
+  glTranslated(-2, 6.5, 0);
+  glRotated(robot_limb_angle, 1, 0, 0);
+  glTranslated(2, -6.5, 0);
+  glTranslated(-2, 5, 0);
+  glScaled(1, 4, 1);
   glutSolidCube(1);
   glPopMatrix();
 
   // Left arm
-  glColor3f(0.0, 0.0, 1.);
+  glColor3d(0.0, 0.0, 1.);
   glPushMatrix();
-  glTranslatef(2, 6.5, 0);
-  glRotatef(-robot_limb_angle, 1, 0, 0);
-  glTranslatef(-2, -6.5, 0);
-  glTranslatef(2, 5, 0);
-  glScalef(1, 4, 1);
+  glTranslated(2, 6.5, 0);
+  glRotated(-robot_limb_angle, 1, 0, 0);
+  glTranslated(-2, -6.5, 0);
+  glTranslated(2, 5, 0);
+  glScaled(1, 4, 1);
   glutSolidCube(1);
   glPopMatrix();
 
