@@ -41,6 +41,7 @@ float ball_y = 4.8;
 float ball_z = 24.5;
 
 float robot_angle = 0.0;
+float robot_limb_angle = 0.0;
 float robot_x = 0.0;
 float robot_y = 0.0;
 float robot_z = 10.0;
@@ -110,18 +111,26 @@ void normal(int tindx) {
  *
  */
 void robotMovement(void) {
+  robot_limb_angle += 15;
+  if (robot_limb_angle >= 45.0) {
+    robot_limb_angle = -45.0;
+  }
   if (robot_x == 30.0 && robot_z <= 10.0 && robot_z > -50) {
     // Move up
     robot_z--;
+    robot_angle = 180.0;
   } else if (robot_x <= 30.0 && robot_x > -30.0 && robot_z == -50.0) {
     // Move to the left
     robot_x--;
+    robot_angle = 270.0;
   } else if (robot_x == -30.0 && robot_z >= -50.0 && robot_z < 10.0) {
     // Move down
     robot_z++;
+    robot_angle = 0.0;
   } else if (robot_x >= -30.0 && robot_x < 30.0 && robot_z == 10.0) {
     // Move to the right
     robot_x++;
+    robot_angle = 90.0;
   }
 }
 
@@ -450,6 +459,7 @@ void spaceship() {
 void robot(void) {
   glPushMatrix();
   glTranslatef(robot_x, robot_y, robot_z);
+  glRotatef(robot_angle, 0.0, 1.0, 0.0);
 
   // Head
   glColor3f(1.0, 0.78, 0.06);
@@ -470,7 +480,7 @@ void robot(void) {
   glColor3f(0.0, 0.0, 1.);
   glPushMatrix();
   glTranslatef(-0.8, 4.0, 0);
-  glRotatef(-robot_angle, 1, 0, 0);
+  glRotatef(-robot_limb_angle, 1, 0, 0);
   glTranslatef(0.8, -4.0, 0);
   glTranslatef(-0.8, 2.2, 0);
   glScalef(1, 4.4, 1);
@@ -481,7 +491,7 @@ void robot(void) {
   glColor3f(0.0, 0.0, 1.);
   glPushMatrix();
   glTranslatef(0.8, 4.0, 0.0);
-  glRotatef(robot_angle, 1, 0, 0);
+  glRotatef(robot_limb_angle, 1, 0, 0);
   glTranslatef(-0.8, -4, 0);
   glTranslatef(0.8, 2.2, 0);
   glScalef(1, 4.4, 1);
@@ -492,7 +502,7 @@ void robot(void) {
   glColor3f(0.0, 0.0, 1.);
   glPushMatrix();
   glTranslatef(-2, 6.5, 0);
-  glRotatef(robot_angle, 1, 0, 0);
+  glRotatef(robot_limb_angle, 1, 0, 0);
   glTranslatef(2, -6.5, 0);
   glTranslatef(-2, 5, 0);
   glScalef(1, 4, 1);
@@ -503,7 +513,7 @@ void robot(void) {
   glColor3f(0.0, 0.0, 1.);
   glPushMatrix();
   glTranslatef(2, 6.5, 0);
-  glRotatef(-robot_angle, 1, 0, 0);
+  glRotatef(-robot_limb_angle, 1, 0, 0);
   glTranslatef(-2, -6.5, 0);
   glTranslatef(2, 5, 0);
   glScalef(1, 4, 1);
