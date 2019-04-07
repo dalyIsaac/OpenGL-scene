@@ -5,6 +5,7 @@
 float spaceship_altitude = 0.0;
 double spaceship_height = 20.0;
 bool spaceship_flying = false;
+static bool lights_on = true;
 
 /**
  * @brief Draws a rocket fin.
@@ -65,29 +66,46 @@ void spaceship(void) {
   fin(2.0, 0.0, 0.0, 240.0, 0.0, 1.0, 0.0);
   glPopMatrix();
 
-  // Red light
-  glLightfv(GL_LIGHT1, GL_POSITION, red_pos);
-  glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, red_spot_dir);
+  if (lights_on) {
+    glEnable(GL_LIGHT1);
+    glEnable(GL_LIGHT2);
+    // Red light
+    glLightfv(GL_LIGHT1, GL_POSITION, red_pos);
+    glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, red_spot_dir);
+
+    // Green light
+    glLightfv(GL_LIGHT2, GL_POSITION, green_pos);
+    glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, green_spot_dir);
+  } else {
+    glDisable(GL_LIGHT1);
+    glDisable(GL_LIGHT2);
+  }
 
   // Red light disk
   glPushMatrix();
   glTranslated(red_pos[0], red_pos[1], red_pos[2]);
   glRotated(90.0, 0.0, 1.0, 0.0);
-  glColor3f(red[0], red[1], red[2]);
+  if (lights_on) {
+    glColor3f(red[0], red[1], red[2]);
+  }
   gluDisk(q, 0.0, 0.5, 20, 2);
   glPopMatrix();
-
-  // Green light
-  glLightfv(GL_LIGHT2, GL_POSITION, green_pos);
-  glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, green_spot_dir);
 
   // Green light disk
   glPushMatrix();
   glTranslated(green_pos[0], green_pos[1], green_pos[2]);
   glRotated(90.0, 0.0, 1.0, 0.0);
-  glColor3f(green[0], green[1], green[2]);
+  if (lights_on) {
+    glColor3f(green[0], green[1], green[2]);
+  }
   gluDisk(q, 0.0, 0.5, 20, 2);
   glPopMatrix();
 
   glPopMatrix();
+}
+
+void spaceshipLightsTimer(int value) {
+  lights_on = !lights_on;
+  glutPostRedisplay();
+  glutTimerFunc(500, spaceshipLightsTimer, 0);
 }

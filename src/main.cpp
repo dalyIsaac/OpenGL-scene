@@ -119,7 +119,7 @@ void normal(int tindx) {
   glNormal3d(nx, ny, nz);
 }
 
-static void myTimer(int value) {
+static void generalTimer(int value) {
   if (spaceship_flying) {
     spaceship_altitude++;
   }
@@ -133,7 +133,7 @@ static void myTimer(int value) {
   }
 
   glutPostRedisplay();
-  glutTimerFunc(50, myTimer, 0);
+  glutTimerFunc(50, generalTimer, 0);
 }
 
 /**
@@ -325,7 +325,8 @@ int main(int argc, char **argv) {
   glutCreateWindow("COSC363 Assignment 1");
   glutSpecialFunc(special);
   glutKeyboardFunc(keyboard);
-  glutTimerFunc(50, myTimer, 0);
+  glutTimerFunc(50, generalTimer, 0);
+  glutTimerFunc(500, spaceshipLightsTimer, 0);
   initialize();
   glutDisplayFunc(display);
   glutMainLoop();
