@@ -2,6 +2,10 @@
 #include "main.h"
 #include <GL/freeglut.h>
 
+double spaceship_altitude = 0.0;
+double spaceship_height = 20.0;
+bool spaceship_flying = false;
+
 /**
  * @brief Draws a rocket fin.
  *

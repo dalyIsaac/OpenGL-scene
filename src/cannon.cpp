@@ -2,6 +2,22 @@
 #include "main.h"
 #include <GL/freeglut.h>
 
+bool ball_fired = false;
+double ball_x = 0.0;
+double ball_y = 4.8;
+double ball_z = 54.5;
+
+int cannon_num_vertices;
+int cannon_num_triangles;
+
+double *x_cannon_mesh;
+double *y_cannon_mesh;
+double *z_cannon_mesh;
+
+int *cannon_t1;
+int *cannon_t2;
+int *cannon_t3;
+
 /**
  * @brief Draws the cannon.
  *
