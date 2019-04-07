@@ -38,7 +38,7 @@ static double ball_x = 0.0;
 static double ball_y = 4.8;
 static double ball_z = 54.5;
 
-static GLuint txId[2]; // Texture ids
+static GLuint txId[3]; // Texture ids
 static GLUquadricObj *q;
 
 /**
@@ -92,16 +92,19 @@ void loadMeshFile(const char *fname) {
 void loadTexture() {
   glGenTextures(2, txId); // Create 2 texture ids
 
-  glBindTexture(GL_TEXTURE_2D, txId[0]); // Use this texture
+  glBindTexture(GL_TEXTURE_2D, txId[0]);
   loadTGA("textures/wall.tga");
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                  GL_LINEAR); // Set texture parameters
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-  glBindTexture(GL_TEXTURE_2D, txId[1]); // Use this texture
+  glBindTexture(GL_TEXTURE_2D, txId[1]);
   loadTGA("textures/tower.tga");
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                  GL_LINEAR); // Set texture parameters
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+  glBindTexture(GL_TEXTURE_2D, txId[2]);
+  loadTGA("textures/roof.tga");
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
@@ -306,27 +309,29 @@ void cannon(void) {
  */
 void castleTower(GLdouble x = 0.0, GLdouble y = 0.0, GLdouble z = 0.0) {
   double tower_height = 35.0;
+  glEnable(GL_TEXTURE_2D);
 
   glPushMatrix();
   glTranslated(x, y, z);
 
   // Tower base
-  glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, txId[1]);
   glPushMatrix();
   glRotated(-90.0, 1.0, 0.0, 0.0);
-  // glutSolidCylinder(5.0, tower_height, 100.0, 100.0);
   gluCylinder(q, 5.0, 5.0, tower_height, 100.0, 100.0);
   glPopMatrix();
 
   // Tower root
+  glBindTexture(GL_TEXTURE_2D, txId[2]);
   glPushMatrix();
   glTranslated(0.0, tower_height, 0.0);
   glRotated(-90.0, 1.0, 0.0, 0.0);
-  glutSolidCone(7.0, 10.0, 100.0, 100.0);
+  gluCylinder(q, 7.0, 0.0, 10.0, 100.0, 100.0);
   glPopMatrix();
 
   glPopMatrix();
+
+  glDisable(GL_TEXTURE_2D);
 }
 
 /**
