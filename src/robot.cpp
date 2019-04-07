@@ -91,19 +91,19 @@ void robot_limb_movement(Robot *robot, double delta) {
 
 void robot_0_movement(Robot *robot) {
   robot_limb_movement(robot, 15.0);
-  if (robot->x == 30.0 && robot->z <= 10.0 && robot->z > -50) {
+  if (robot->x == 30.0 && robot->z <= 30.0 && robot->z > -30.0) {
     // Move up
     robot->z--;
     robot->direction_angle = 180.0;
-  } else if (robot->x <= 30.0 && robot->x > -30.0 && robot->z == -50.0) {
+  } else if (robot->x <= 30.0 && robot->x > -30.0 && robot->z == -30.0) {
     // Move to the left
     robot->x--;
     robot->direction_angle = 270.0;
-  } else if (robot->x == -30.0 && robot->z >= -50.0 && robot->z < 10.0) {
+  } else if (robot->x == -30.0 && robot->z >= -30.0 && robot->z < 30.0) {
     // Move down
     robot->z++;
     robot->direction_angle = 0.0;
-  } else if (robot->x >= -30.0 && robot->x < 30.0 && robot->z == 10.0) {
+  } else if (robot->x >= -30.0 && robot->x < 30.0 && robot->z == 30.0) {
     // Move to the right
     robot->x++;
     robot->direction_angle = 90.0;
@@ -117,35 +117,29 @@ void robot_1_movement(Robot *robot) {
   case RobotMovement::In:
     robot->z -= 0.25;
 
-    if (robot->z > -10.0 && robot->z <= -5.0) {
+    if (robot->z <= 15.0 && robot->z > 10.0) {
       robot->direction_angle = fmod(robot->direction_angle + 4.5, 180.0);
     }
 
-    if (robot->x == 0.0 && robot->z == -10.0) {
-      robot->x = 0;
-      robot->z = 10;
-      robot->rotation_translation_z = -20;
+    if (robot->x == 0.0 && robot->z == 10.0) {
       movement = RobotMovement::Rotating;
     }
     break;
   case RobotMovement::Rotating:
     robot->rotation_angle--;
 
-    if (robot->rotation_angle <= -60.0) {
+    if (fmod(robot->rotation_angle, 90.0) <= -60.0) {
       robot->direction_angle = fmod(robot->direction_angle + 3.0, 180.0);
     }
 
     if (robot->direction_angle == 0.0) {
-      robot->rotation_angle = -90.0;
-      robot->x = 0.0;
-      robot->z = -10.0;
       movement = RobotMovement::Out;
     }
     break;
   case RobotMovement::Out:
     robot->z += 0.25;
 
-    if (robot->z >= 5.0) {
+    if (robot->z >= 25.0) {
       movement = RobotMovement::In;
     }
     break;
@@ -157,7 +151,7 @@ void robot_1_movement(Robot *robot) {
 Robot robots[ROBOTS_LENGTH] = {{
                                  x : 0.0,
                                  y : 0.0,
-                                 z : 10.0,
+                                 z : 30.0,
                                  direction_angle : 0.0,
                                  limb_angle : 0.0,
                                  right_leg_moving_forward : true,
@@ -170,7 +164,7 @@ Robot robots[ROBOTS_LENGTH] = {{
                                {
                                  x : 0.0,
                                  y : 0.0,
-                                 z : 5.0,
+                                 z : 25.0,
                                  direction_angle : 0.0,
                                  limb_angle : 0.0,
                                  right_leg_moving_forward : true,

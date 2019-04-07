@@ -39,7 +39,7 @@ static double spaceship_altitude = 0.0;
 static bool ball_fired = false;
 static double ball_x = 0.0;
 static double ball_y = 4.8;
-static double ball_z = 24.5;
+static double ball_z = 54.5;
 
 /**
  * @brief Loads the OFF mesh file.
@@ -233,7 +233,7 @@ void cannonBall(void) {
 void cannon(void) {
   glPushMatrix();
   // Global transitions
-  glTranslated(0.0, 0.0, 20.0);
+  glTranslated(0.0, 0.0, 50.0);
   glRotated(-90.0, 0.0, 1.0, 0.0);
   glScaled(0.1, 0.1, 0.1);
 
@@ -352,24 +352,24 @@ void castleWall(GLdouble translate_x = 0.0, GLdouble translate_y = 0.0,
  */
 void castle(void) {
   // Right front tower
-  castleTower(20.0);
+  castleTower(20.0, 0.0, 20.0);
   // Front
-  castleWall();
+  castleWall(0.0, 0.0, 20.0);
   // Left front tower
-  castleTower(-20.0);
+  castleTower(-20.0, 0.0, 20.0);
 
   // Right back tower
-  castleTower(20.0, 0.0, -40.0);
+  castleTower(20.0, 0.0, -20.0);
   // Back
-  castleWall(0.0, 0.0, -40.0);
+  castleWall(0.0, 0.0, -20.0);
   // Left back tower
-  castleTower(-20.0, 0.0, -40.0);
+  castleTower(-20.0, 0.0, -20.0);
 
   // Right side wall
-  castleWall(20.0, 0.0, -20.0, 90.0, 0.0, 1.0, 0.0);
+  castleWall(20.0, 0.0, 0.0, 90.0, 0.0, 1.0, 0.0);
 
   // Left side wall
-  castleWall(-20.0, 0.0, -20.0, 90.0, 0.0, 1.0, 0.0);
+  castleWall(-20.0, 0.0, 0.0, 90.0, 0.0, 1.0, 0.0);
 }
 
 /**
@@ -405,7 +405,7 @@ void fin(GLdouble translate_x = 0.0, GLdouble translate_y = 0.0,
  */
 void spaceship(void) {
   glPushMatrix();
-  glTranslated(0.0, spaceship_altitude, -20.0);
+  glTranslated(0.0, spaceship_altitude, 0.0);
 
   // Fuselage
   glPushMatrix();
