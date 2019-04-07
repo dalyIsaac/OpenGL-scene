@@ -22,8 +22,8 @@ static double radians_five = 0.0872665;
 static double camera_angle = 0;
 
 static double eye_x = 0.0;
-static double eye_y = 200.0;
-static double eye_z = 30.0;
+static double eye_y = 20.0;
+static double eye_z = 100.0;
 static double look_x = 0;
 static double look_y = 0.0;
 static double look_z = 1;
@@ -318,31 +318,61 @@ void castleWall(GLdouble translate_x = 0.0, GLdouble translate_y = 0.0,
                 GLdouble translate_z = 0.0, GLdouble angle = 0.0,
                 GLdouble rotate_x = 0.0, GLdouble rotate_y = 0.0,
                 GLdouble rotate_z = 0.0) {
+  double half_height = wall_height / 2;
+  double half_thick = wall_thickness / 2;
   glPushMatrix();
   glTranslated(translate_x, translate_y, translate_z);
   glRotated(angle, rotate_x, rotate_y, rotate_z);
 
-  // Left front wall
-  glPushMatrix();
-  glTranslated(-12.5, wall_height / 2, 0.0);
-  glScaled(15.0, wall_height, wall_thickness);
-  glutSolidCube(1.0);
-  glPopMatrix();
+  // Front wall
+  glBegin(GL_QUAD_STRIP);
+  glNormal3d(0.0, 0.0, 1.0);
+  glVertex3d(-20.0, 0.0, half_thick);
+  glVertex3d(-5.0, 0.0, half_thick);
+  glVertex3d(-20.0, wall_height, half_thick);
+  glVertex3d(-5.0, half_height, half_thick);
+  glVertex3d(20.0, wall_height, half_thick);
+  glVertex3d(5.0, half_height, half_thick);
+  glVertex3d(20.0, 0.0, half_thick);
+  glVertex3d(5.0, 0.0, half_thick);
+  glEnd();
 
-  // Right front wall
-  glPushMatrix();
-  glTranslated(12.5, wall_height / 2, 0.0);
-  glScaled(15.0, wall_height, wall_thickness);
-  glutSolidCube(1.0);
-  glPopMatrix();
+  // Back wall
+  glBegin(GL_QUAD_STRIP);
+  glNormal3d(0.0, 0.0, -1.0);
+  glVertex3d(-20.0, 0.0, -half_thick);
+  glVertex3d(-5.0, 0.0, -half_thick);
+  glVertex3d(-20.0, wall_height, -half_thick);
+  glVertex3d(-5.0, half_height, -half_thick);
+  glVertex3d(20.0, wall_height, -half_thick);
+  glVertex3d(5.0, half_height, -half_thick);
+  glVertex3d(20.0, 0.0, -half_thick);
+  glVertex3d(5.0, 0.0, -half_thick);
+  glEnd();
 
-  // Front wall top
-  glPushMatrix();
-  glTranslated(0.0, 3 * wall_height / 4, 0.0);
-  glScaled(10.0, wall_height / 2, wall_thickness);
-  glutSolidCube(1.0);
-  glPopMatrix();
+  // Passageway
+  glBegin(GL_QUAD_STRIP);
+  glNormal3d(1.0, 0.0, 0.0);
+  glVertex3d(-5, 0.0, half_thick);
+  glVertex3d(-5, 0.0, -half_thick);
+  glVertex3d(-5, half_height, half_thick);
+  glVertex3d(-5, half_height, -half_thick);
+  glNormal3d(0.0, -1.0, 0.0);
+  glVertex3d(5, half_height, half_thick);
+  glVertex3d(5, half_height, -half_thick);
+  glNormal3d(-1.0, 0.0, 0.0);
+  glVertex3d(5, 0.0, half_thick);
+  glVertex3d(5, 0.0, -half_thick);
+  glEnd();
 
+  // Top of wall
+  glBegin(GL_QUAD_STRIP);
+  glNormal3d(0.0, 1.0, 0.0);
+  glVertex3d(-20.0, wall_height, half_thick);
+  glVertex3d(-20.0, wall_height, -half_thick);
+  glVertex3d(20.0, wall_height, half_thick);
+  glVertex3d(20.0, wall_height, -half_thick);
+  glEnd();
   glPopMatrix();
 }
 
