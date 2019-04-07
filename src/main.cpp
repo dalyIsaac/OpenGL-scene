@@ -257,8 +257,10 @@ static void display(void) {
  *
  */
 static void initialize(void) {
-  float grey[4] = {0.2, 0.2, 0.2, 1.0};
-  float white[4] = {1.0, 1.0, 1.0, 1.0};
+  float grey[4] = {0.2f, 0.2f, 0.2f, 1.0f};
+  float white[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+  float red[4] = {1.0f, 0.16f, 0.16f, 1.0f};
+  float green[4] = {0.16f, 1.0f, 0.321f, 1.0f};
 
   q = gluNewQuadric();
   gluQuadricTexture(q, GL_TRUE);
@@ -268,19 +270,27 @@ static void initialize(void) {
 
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
-  // glEnable(GL_LIGHT1);
+  glEnable(GL_LIGHT1);
+  glEnable(GL_LIGHT2);
 
   //	Define light's ambient, diffuse, specular properties
   glLightfv(GL_LIGHT0, GL_AMBIENT, grey);
   glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
   glLightfv(GL_LIGHT0, GL_SPECULAR, white);
 
-  // glLightfv(GL_LIGHT1, GL_AMBIENT, grey);
-  // glLightfv(GL_LIGHT1, GL_DIFFUSE, white);
-  // glLightfv(GL_LIGHT1, GL_SPECULAR, white);
+  glLightfv(GL_LIGHT1, GL_AMBIENT, grey);
+  glLightfv(GL_LIGHT1, GL_DIFFUSE, red);
+  glLightfv(GL_LIGHT1, GL_SPECULAR, red);
 
-  // glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 30.0);
-  // glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 0.01);
+  glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 60.0);
+  glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 100.0);
+
+  glLightfv(GL_LIGHT2, GL_AMBIENT, grey);
+  glLightfv(GL_LIGHT2, GL_DIFFUSE, green);
+  glLightfv(GL_LIGHT2, GL_SPECULAR, green);
+
+  glLightf(GL_LIGHT2, GL_SPOT_CUTOFF, 60.0);
+  glLightf(GL_LIGHT2, GL_SPOT_EXPONENT, 100.0);
 
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_NORMALIZE);

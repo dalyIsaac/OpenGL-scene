@@ -2,7 +2,7 @@
 #include "main.h"
 #include <GL/freeglut.h>
 
-double spaceship_altitude = 0.0;
+float spaceship_altitude = 0.0;
 double spaceship_height = 20.0;
 bool spaceship_flying = false;
 
@@ -37,8 +37,21 @@ static void fin(GLdouble translate_x = 0.0, GLdouble translate_y = 0.0,
  *
  */
 void spaceship(void) {
+  float red_light_pos[] = {2.0f, 4.0f + spaceship_altitude, 0.0f, 1.0f};
+  float red_light_spot_dir[] = {-20.0f, -10.0f, 0.0f, 0.0f};
+  float green_light_pos[] = {2.0f, 4.0f + spaceship_altitude, 0.0f, 1.0f};
+  float green_light_spot_dir[] = {20.0f, -10.0f, 0.0f, 0.0f};
+
   glPushMatrix();
-  glTranslated(0.0, spaceship_altitude, 0.0);
+  glTranslatef(0.0, spaceship_altitude, 0.0);
+
+  // Red light
+  glLightfv(GL_LIGHT1, GL_POSITION, red_light_pos);
+  glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, red_light_spot_dir);
+
+  // Green light
+  glLightfv(GL_LIGHT2, GL_POSITION, green_light_pos);
+  glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, green_light_spot_dir);
 
   // Fuselage
   glPushMatrix();
