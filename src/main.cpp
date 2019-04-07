@@ -1,7 +1,7 @@
 #include "main.h"
 #include "cannon.h"
 #include "castle.h"
-#include "loadBMP.h"
+#include "loadTGA.h"
 #include "robot.h"
 #include "spaceship.h"
 #include <GL/freeglut.h>
@@ -50,7 +50,7 @@ static double look_z = 1;
  *
  * @param fname
  */
-void loadMeshFile(const char *fname) {
+static void loadMeshFile(const char *fname) {
   ifstream fp_in;
   int num, ne;
 
@@ -93,7 +93,7 @@ void loadMeshFile(const char *fname) {
  * @brief Loads the brick texture.
  *
  */
-void loadTexture() {
+static void loadTexture() {
   glGenTextures(2, txId); // Create 2 texture ids
 
   glBindTexture(GL_TEXTURE_2D, txId[0]);
@@ -136,7 +136,7 @@ void normal(int tindx) {
   glNormal3d(nx, ny, nz);
 }
 
-void myTimer(int value) {
+static void myTimer(int value) {
   if (spaceship_flying) {
     spaceship_altitude++;
   }
@@ -160,30 +160,30 @@ void myTimer(int value) {
  * @param x
  * @param y
  */
-void special(int key, int x, int y) {
+static void special(int key, int x, int y) {
   switch (key) {
-  case GLUT_KEY_UP:
-    eye_x += 0.5 * sin(camera_angle);
-    eye_z -= 0.5 * cos(camera_angle);
-    break;
-  case GLUT_KEY_DOWN:
-    eye_x -= 0.5 * sin(camera_angle);
-    eye_z += 0.5 * cos(camera_angle);
-    break;
-  case GLUT_KEY_LEFT:
-    camera_angle -= radians_five;
-    break;
-  case GLUT_KEY_RIGHT:
-    camera_angle += radians_five;
-    break;
-  case GLUT_KEY_PAGE_UP:
-    eye_y++;
-    break;
-  case GLUT_KEY_PAGE_DOWN:
-    eye_y--;
-    break;
-  default:
-    break;
+    case GLUT_KEY_UP:
+      eye_x += 0.5 * sin(camera_angle);
+      eye_z -= 0.5 * cos(camera_angle);
+      break;
+    case GLUT_KEY_DOWN:
+      eye_x -= 0.5 * sin(camera_angle);
+      eye_z += 0.5 * cos(camera_angle);
+      break;
+    case GLUT_KEY_LEFT:
+      camera_angle -= radians_five;
+      break;
+    case GLUT_KEY_RIGHT:
+      camera_angle += radians_five;
+      break;
+    case GLUT_KEY_PAGE_UP:
+      eye_y++;
+      break;
+    case GLUT_KEY_PAGE_DOWN:
+      eye_y--;
+      break;
+    default:
+      break;
   }
 
   look_x = eye_x + 100 * sin(camera_angle);
@@ -199,18 +199,18 @@ void special(int key, int x, int y) {
  * @param x
  * @param y
  */
-void keyboard(unsigned char key, int x, int y) {
+static void keyboard(unsigned char key, int x, int y) {
   switch (key) {
-  case 's':
-  case 'S':
-    spaceship_flying = true;
-    break;
-  case 'c':
-  case 'C':
-    ball_fired = true;
-    break;
-  default:
-    break;
+    case 's':
+    case 'S':
+      spaceship_flying = true;
+      break;
+    case 'c':
+    case 'C':
+      ball_fired = true;
+      break;
+    default:
+      break;
   }
 }
 
@@ -218,7 +218,7 @@ void keyboard(unsigned char key, int x, int y) {
  * @brief Draws a grid of lines on the floor plane.
  *
  */
-void drawFloor(void) {
+static void drawFloor(void) {
   glColor3d(0., 0.5, 0.); // Floor colour
 
   for (int i = -100; i <= 100; i++) {
@@ -235,7 +235,7 @@ void drawFloor(void) {
  * @brief Contains function calls for generating the scene.
  *
  */
-void display(void) {
+static void display(void) {
   float lightPosition[4] = {0., 10., 10., 1.0};
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -270,7 +270,7 @@ void display(void) {
  * @brief Initializes OpenGL states.
  *
  */
-void initialize(void) {
+static void initialize(void) {
   q = gluNewQuadric();
 
   loadTexture();

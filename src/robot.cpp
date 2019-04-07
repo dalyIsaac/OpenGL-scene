@@ -76,7 +76,7 @@ void draw_robot(Robot robot) {
   glPopMatrix();
 }
 
-void robot_limb_movement(Robot *robot, double delta) {
+static void robot_limb_movement(Robot *robot, double delta) {
   if (robot->limb_angle >= 45.0) {
     robot->right_leg_moving_forward = false;
   } else if (robot->limb_angle <= -45.0) {
@@ -89,7 +89,7 @@ void robot_limb_movement(Robot *robot, double delta) {
   }
 }
 
-void robot_0_movement(Robot *robot) {
+static void robot_0_movement(Robot *robot) {
   robot_limb_movement(robot, 15.0);
   if (robot->x == 30.0 && robot->z <= 30.0 && robot->z > -30.0) {
     // Move up
@@ -110,42 +110,40 @@ void robot_0_movement(Robot *robot) {
   }
 }
 
-void robot_1_movement(Robot *robot) {
+static void robot_1_movement(Robot *robot) {
   static RobotMovement movement = RobotMovement::In;
 
   robot_limb_movement(robot, 4.0);
   switch (movement) {
-  case RobotMovement::In:
-    robot->z -= 0.25;
+    case RobotMovement::In:
+      robot->z -= 0.25;
 
-    if (robot->z <= 15.0 && robot->z > 10.0) {
-      robot->direction_angle = fmod(robot->direction_angle + 4.5, 180.0);
-    }
+      if (robot->z <= 15.0 && robot->z > 10.0) {
+        robot->direction_angle = fmod(robot->direction_angle + 4.5, 180.0);
+      }
 
-    if (robot->x == 0.0 && robot->z == 10.0) {
-      movement = RobotMovement::Rotating;
-    }
-    break;
-  case RobotMovement::Rotating:
-    robot->rotation_angle--;
+      if (robot->x == 0.0 && robot->z == 10.0) {
+        movement = RobotMovement::Rotating;
+      }
+      break;
+    case RobotMovement::Rotating:
+      robot->rotation_angle--;
 
-    if (fmod(robot->rotation_angle, 90.0) <= -60.0) {
-      robot->direction_angle = fmod(robot->direction_angle + 3.0, 180.0);
-    }
+      if (fmod(robot->rotation_angle, 90.0) <= -60.0) {
+        robot->direction_angle = fmod(robot->direction_angle + 3.0, 180.0);
+      }
 
-    if (robot->direction_angle == 0.0) {
-      movement = RobotMovement::Out;
-    }
-    break;
-  case RobotMovement::Out:
-    robot->z += 0.25;
+      if (robot->direction_angle == 0.0) {
+        movement = RobotMovement::Out;
+      }
+      break;
+    case RobotMovement::Out:
+      robot->z += 0.25;
 
-    if (robot->z >= 25.0) {
-      movement = RobotMovement::In;
-    }
-    break;
-  default:
-    break;
+      if (robot->z >= 25.0) {
+        movement = RobotMovement::In;
+      }
+      break;
   }
 }
 

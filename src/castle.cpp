@@ -1,3 +1,4 @@
+#include "castle.h"
 #include "main.h"
 #include <GL/freeglut.h>
 
@@ -8,7 +9,7 @@
  * @param y Translation distance in the y-direction.
  * @param z Translation distance in the z-direction.
  */
-void castleTower(GLdouble x = 0.0, GLdouble y = 0.0, GLdouble z = 0.0) {
+static void castleTower(GLdouble x = 0.0, GLdouble y = 0.0, GLdouble z = 0.0) {
   double tower_height = 35.0;
   glEnable(GL_TEXTURE_2D);
 
@@ -41,7 +42,7 @@ void castleTower(GLdouble x = 0.0, GLdouble y = 0.0, GLdouble z = 0.0) {
  * @param half_thick Half of the thickness of the wall.
  * @param half_height Half of the height of the wall.
  */
-void passageway(double half_thick, double half_height) {
+static void passageway(double half_thick, double half_height) {
   double tex_height = 5.0 / 6.0;
   glBegin(GL_QUAD_STRIP);
   glNormal3d(1.0, 0.0, 0.0);
@@ -90,7 +91,7 @@ void passageway(double half_thick, double half_height) {
  * @param wall_height The height of the wall.
  * @param half_thick Half of the thickness of the wall.
  */
-void wallTop(double wall_height, double half_thick) {
+static void wallTop(double wall_height, double half_thick) {
   double tex_height = 5.0 / 6.0;
   glBegin(GL_QUAD_STRIP);
   glNormal3d(0.0, 1.0, 0.0);
@@ -125,10 +126,10 @@ void wallTop(double wall_height, double half_thick) {
  * @param rotate_y y-component of the rotation vector.
  * @param rotate_z z-component of the rotation vector.
  */
-void castleWall(GLdouble translate_x = 0.0, GLdouble translate_y = 0.0,
-                GLdouble translate_z = 0.0, GLdouble angle = 0.0,
-                GLdouble rotate_x = 0.0, GLdouble rotate_y = 0.0,
-                GLdouble rotate_z = 0.0) {
+static void castleWall(GLdouble translate_x = 0.0, GLdouble translate_y = 0.0,
+                       GLdouble translate_z = 0.0, GLdouble angle = 0.0,
+                       GLdouble rotate_x = 0.0, GLdouble rotate_y = 0.0,
+                       GLdouble rotate_z = 0.0) {
   double wall_height = 30.0;
   double wall_thickness = 6.0;
   double half_height = wall_height / 2;

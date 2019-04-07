@@ -1,3 +1,4 @@
+#include "spaceship.h"
 #include "main.h"
 #include <GL/freeglut.h>
 
@@ -12,12 +13,11 @@
  * @param rotate_y
  * @param rotate_z
  */
-void fin(GLdouble translate_x = 0.0, GLdouble translate_y = 0.0,
-         GLdouble translate_z = 0.0, GLdouble angle = 0.0,
-         GLdouble rotate_x = 0.0, GLdouble rotate_y = 0.0,
-         GLdouble rotate_z = 0.0) {
+static void fin(GLdouble translate_x = 0.0, GLdouble translate_y = 0.0,
+                GLdouble translate_z = 0.0, GLdouble angle = 0.0,
+                GLdouble rotate_x = 0.0, GLdouble rotate_y = 0.0,
+                GLdouble rotate_z = 0.0) {
   glPushMatrix();
-  // glRotated(angle, rotate_x, rotate_y, rotate_z);
   glRotated(angle, rotate_x, rotate_y, rotate_z);
   glTranslated(translate_x, translate_y, translate_z);
   glBegin(GL_TRIANGLE_STRIP);
