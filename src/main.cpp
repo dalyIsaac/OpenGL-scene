@@ -1,3 +1,4 @@
+#include "loadBMP.h"
 #include "robot.h"
 #include <GL/freeglut.h>
 #include <climits>
@@ -28,10 +29,6 @@ static double look_x = 0;
 static double look_y = 0.0;
 static double look_z = 1;
 
-static double tower_height = 35.0;
-static double wall_height = 30.0;
-static double wall_thickness = 6.0;
-
 static bool spaceship_flying = false;
 static double spaceship_height = 20.0;
 static double spaceship_altitude = 0.0;
@@ -40,6 +37,8 @@ static bool ball_fired = false;
 static double ball_x = 0.0;
 static double ball_y = 4.8;
 static double ball_z = 54.5;
+
+static GLuint txId[2]; // Texture ids
 
 /**
  * @brief Loads the OFF mesh file.
@@ -83,6 +82,28 @@ void loadMeshFile(const char *fname) {
 
   fp_in.close();
   cout << " File successfully read." << endl;
+}
+
+/**
+ * @brief Loads the brick texture.
+ *
+ */
+void loadTexture() {
+  glGenTextures(2, txId); // Create 2 texture ids
+
+  glBindTexture(GL_TEXTURE_2D, txId[0]); // Use this texture
+  loadTGA("media/brick.tga");
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                  GL_LINEAR); // Set texture parameters
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+  // glBindTexture(GL_TEXTURE_2D, txId[1]);  //Use this texture
+  //   loadTGA("Yard/Floor.tga");
+  // glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);	//Set
+  // texture parameters
+  // glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 }
 
 /**
@@ -283,6 +304,8 @@ void cannon(void) {
  * @param z Translation distance in the z-direction.
  */
 void castleTower(GLdouble x = 0.0, GLdouble y = 0.0, GLdouble z = 0.0) {
+  double tower_height = 35.0;
+
   glPushMatrix();
   glTranslated(x, y, z);
 
@@ -303,6 +326,84 @@ void castleTower(GLdouble x = 0.0, GLdouble y = 0.0, GLdouble z = 0.0) {
 }
 
 /**
+ * @brief Draws the passageway for the castle wall
+ *
+ * @param half_thick Half of the thickness of the wall.
+ * @param half_height Half of the height of the wall.
+ */
+void passageway(double half_thick, double half_height) {
+  double tex_height = 5.0 / 6.0;
+  glBegin(GL_QUAD_STRIP);
+  glNormal3d(1.0, 0.0, 0.0);
+
+  // Front left bottom corner
+  glTexCoord2d(0.0, 0.0);
+  glVertex3d(-5, 0.0, half_thick);
+
+  // Back left bottom corner
+  glTexCoord2d(0.0, tex_height);
+  glVertex3d(-5, 0.0, -half_thick);
+
+  // Front left top corner
+  glTexCoord2d(2.0, 0.0);
+  glVertex3d(-5, half_height, half_thick);
+
+  // Back left top corner
+  glTexCoord2d(2.0, tex_height);
+  glVertex3d(-5, half_height, -half_thick);
+
+  glNormal3d(0.0, -1.0, 0.0);
+
+  // Front right top corner
+  glTexCoord2d(4.0, 0.0);
+  glVertex3d(5, half_height, half_thick);
+
+  // Back right top corner
+  glTexCoord2d(4.0, tex_height);
+  glVertex3d(5, half_height, -half_thick);
+
+  glNormal3d(-1.0, 0.0, 0.0);
+
+  // Front right bottom corner
+  glTexCoord2d(6.0, 0.0);
+  glVertex3d(5, 0.0, half_thick);
+
+  // Back right bottom corner
+  glTexCoord2d(6.0, tex_height);
+  glVertex3d(5, 0.0, -half_thick);
+  glEnd();
+}
+
+/**
+ * @brief Draws the top of castle walls.
+ *
+ * @param wall_height The height of the wall.
+ * @param half_thick Half of the thickness of the wall.
+ */
+void wallTop(double wall_height, double half_thick) {
+  double tex_height = 5.0 / 6.0;
+  glBegin(GL_QUAD_STRIP);
+  glNormal3d(0.0, 1.0, 0.0);
+
+  // Left front corner
+  glTexCoord2d(0.0, 0.0);
+  glVertex3d(-20.0, wall_height, half_thick);
+
+  // Left back corner
+  glTexCoord2d(0.0, tex_height);
+  glVertex3d(-20.0, wall_height, -half_thick);
+
+  // Right front corner
+  glTexCoord2d(8.0, 0.0);
+  glVertex3d(20.0, wall_height, half_thick);
+
+  // Right back corner
+  glTexCoord2d(8.0, tex_height);
+  glVertex3d(20.0, wall_height, -half_thick);
+  glEnd();
+}
+
+/**
  * @brief Draws a castle wall, and moves it to the given location, for a given
  * rotation.
  *
@@ -318,61 +419,61 @@ void castleWall(GLdouble translate_x = 0.0, GLdouble translate_y = 0.0,
                 GLdouble translate_z = 0.0, GLdouble angle = 0.0,
                 GLdouble rotate_x = 0.0, GLdouble rotate_y = 0.0,
                 GLdouble rotate_z = 0.0) {
+  double wall_height = 30.0;
+  double wall_thickness = 6.0;
   double half_height = wall_height / 2;
   double half_thick = wall_thickness / 2;
+
   glPushMatrix();
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, txId[0]);
+
   glTranslated(translate_x, translate_y, translate_z);
   glRotated(angle, rotate_x, rotate_y, rotate_z);
 
-  // Front wall
-  glBegin(GL_QUAD_STRIP);
-  glNormal3d(0.0, 0.0, 1.0);
-  glVertex3d(-20.0, 0.0, half_thick);
-  glVertex3d(-5.0, 0.0, half_thick);
-  glVertex3d(-20.0, wall_height, half_thick);
-  glVertex3d(-5.0, half_height, half_thick);
-  glVertex3d(20.0, wall_height, half_thick);
-  glVertex3d(5.0, half_height, half_thick);
-  glVertex3d(20.0, 0.0, half_thick);
-  glVertex3d(5.0, 0.0, half_thick);
-  glEnd();
+  // Walls
+  for (double i = 1.0; i >= -1.0; i -= 2.0) {
+    glBegin(GL_QUAD_STRIP);
+    glNormal3d(0.0, 0.0, i);
 
-  // Back wall
-  glBegin(GL_QUAD_STRIP);
-  glNormal3d(0.0, 0.0, -1.0);
-  glVertex3d(-20.0, 0.0, -half_thick);
-  glVertex3d(-5.0, 0.0, -half_thick);
-  glVertex3d(-20.0, wall_height, -half_thick);
-  glVertex3d(-5.0, half_height, -half_thick);
-  glVertex3d(20.0, wall_height, -half_thick);
-  glVertex3d(5.0, half_height, -half_thick);
-  glVertex3d(20.0, 0.0, -half_thick);
-  glVertex3d(5.0, 0.0, -half_thick);
-  glEnd();
+    // Bottom left corner
+    glTexCoord2d(0.0, 0.0);
+    glVertex3d(-20.0, 0.0, i * half_thick);
+    // Bottom left-inner corner
+    glTexCoord2d(3.0, 0.0);
+    glVertex3d(-5.0, 0.0, i * half_thick);
 
-  // Passageway
-  glBegin(GL_QUAD_STRIP);
-  glNormal3d(1.0, 0.0, 0.0);
-  glVertex3d(-5, 0.0, half_thick);
-  glVertex3d(-5, 0.0, -half_thick);
-  glVertex3d(-5, half_height, half_thick);
-  glVertex3d(-5, half_height, -half_thick);
-  glNormal3d(0.0, -1.0, 0.0);
-  glVertex3d(5, half_height, half_thick);
-  glVertex3d(5, half_height, -half_thick);
-  glNormal3d(-1.0, 0.0, 0.0);
-  glVertex3d(5, 0.0, half_thick);
-  glVertex3d(5, 0.0, -half_thick);
-  glEnd();
+    // Top left corner
+    glTexCoord2d(0.0, 4.0);
+    glVertex3d(-20.0, wall_height, i * half_thick);
 
-  // Top of wall
-  glBegin(GL_QUAD_STRIP);
-  glNormal3d(0.0, 1.0, 0.0);
-  glVertex3d(-20.0, wall_height, half_thick);
-  glVertex3d(-20.0, wall_height, -half_thick);
-  glVertex3d(20.0, wall_height, half_thick);
-  glVertex3d(20.0, wall_height, -half_thick);
-  glEnd();
+    // Left upper-inner corner
+    glTexCoord2d(3.0, 2.0);
+    glVertex3d(-5.0, half_height, i * half_thick);
+
+    // Right upper corner
+    glTexCoord2d(8.0, 4.0);
+    glVertex3d(20.0, wall_height, i * half_thick);
+
+    // Right upper-inner corner
+    glTexCoord2d(5.0, 2.0);
+    glVertex3d(5.0, half_height, i * half_thick);
+
+    // Right bottom corner
+    glTexCoord2d(8.0, 0.0);
+    glVertex3d(20.0, 0.0, i * half_thick);
+
+    // Bottom right-inner corner
+    glTexCoord2d(5.0, 0.0);
+    glVertex3d(5.0, 0.0, i * half_thick);
+    glEnd();
+  }
+
+  passageway(half_thick, half_height);
+
+  wallTop(wall_height, half_thick);
+
+  glDisable(GL_TEXTURE_2D);
   glPopMatrix();
 }
 
@@ -500,6 +601,7 @@ void display(void) {
  *
  */
 void initialize(void) {
+  loadTexture();
   loadMeshFile("models/Cannon.off");
 
   // Background color
