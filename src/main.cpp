@@ -1,4 +1,5 @@
 #include "main.h"
+#include "cannon.h"
 #include "castle.h"
 #include "loadBMP.h"
 #include "robot.h"
@@ -12,20 +13,26 @@ using namespace std;
 
 GLuint txId[3]; // Texture ids
 GLUquadricObj *q;
+
 double spaceship_altitude = 0.0;
 double spaceship_height = 20.0;
 bool spaceship_flying = false;
 
-static double *x_cannon_mesh;
-static double *y_cannon_mesh;
-static double *z_cannon_mesh;
+bool ball_fired = false;
+double ball_x = 0.0;
+double ball_y = 4.8;
+double ball_z = 54.5;
 
-static int *t1;
-static int *t2;
-static int *t3;
+int cannon_num_vertices;
+int cannon_num_triangles;
 
-static int num_vertices;
-static int num_triangles;
+double *x_cannon_mesh;
+double *y_cannon_mesh;
+double *z_cannon_mesh;
+
+int *cannon_t1;
+int *cannon_t2;
+int *cannon_t3;
 
 static double radians_five = 0.0872665;
 
@@ -37,11 +44,6 @@ static double eye_z = 100.0;
 static double look_x = 0;
 static double look_y = 0.0;
 static double look_z = 1;
-
-static bool ball_fired = false;
-static double ball_x = 0.0;
-static double ball_y = 4.8;
-static double ball_z = 54.5;
 
 /**
  * @brief Loads the OFF mesh file.
@@ -59,23 +61,23 @@ void loadMeshFile(const char *fname) {
   }
 
   fp_in.ignore(INT_MAX, '\n'); // ignore first line
-  fp_in >> num_vertices >> num_triangles >>
+  fp_in >> cannon_num_vertices >> cannon_num_triangles >>
       ne; // read number of vertices, polygons, edges
 
-  x_cannon_mesh = new double[num_vertices]; // create arrays
-  y_cannon_mesh = new double[num_vertices];
-  z_cannon_mesh = new double[num_vertices];
+  x_cannon_mesh = new double[cannon_num_vertices]; // create arrays
+  y_cannon_mesh = new double[cannon_num_vertices];
+  z_cannon_mesh = new double[cannon_num_vertices];
 
-  t1 = new int[num_triangles];
-  t2 = new int[num_triangles];
-  t3 = new int[num_triangles];
+  cannon_t1 = new int[cannon_num_triangles];
+  cannon_t2 = new int[cannon_num_triangles];
+  cannon_t3 = new int[cannon_num_triangles];
 
-  for (int i = 0; i < num_vertices; i++) // read vertex list
+  for (int i = 0; i < cannon_num_vertices; i++) // read vertex list
     fp_in >> x_cannon_mesh[i] >> y_cannon_mesh[i] >> z_cannon_mesh[i];
 
-  for (int i = 0; i < num_triangles; i++) // read polygon list
+  for (int i = 0; i < cannon_num_triangles; i++) // read polygon list
   {
-    fp_in >> num >> t1[i] >> t2[i] >> t3[i];
+    fp_in >> num >> cannon_t1[i] >> cannon_t2[i] >> cannon_t3[i];
     if (num != 3) {
       cout << "ERROR: Polygon with index " << i << " is not a triangle."
            << endl; // not a triangle!!
@@ -118,12 +120,15 @@ void loadTexture() {
  * @param tindx
  */
 void normal(int tindx) {
-  double x1 = x_cannon_mesh[t1[tindx]], x2 = x_cannon_mesh[t2[tindx]],
-         x3 = x_cannon_mesh[t3[tindx]];
-  double y1 = y_cannon_mesh[t1[tindx]], y2 = y_cannon_mesh[t2[tindx]],
-         y3 = y_cannon_mesh[t3[tindx]];
-  double z1 = z_cannon_mesh[t1[tindx]], z2 = z_cannon_mesh[t2[tindx]],
-         z3 = z_cannon_mesh[t3[tindx]];
+  double x1 = x_cannon_mesh[cannon_t1[tindx]],
+         x2 = x_cannon_mesh[cannon_t2[tindx]],
+         x3 = x_cannon_mesh[cannon_t3[tindx]];
+  double y1 = y_cannon_mesh[cannon_t1[tindx]],
+         y2 = y_cannon_mesh[cannon_t2[tindx]],
+         y3 = y_cannon_mesh[cannon_t3[tindx]];
+  double z1 = z_cannon_mesh[cannon_t1[tindx]],
+         z2 = z_cannon_mesh[cannon_t2[tindx]],
+         z3 = z_cannon_mesh[cannon_t3[tindx]];
   double nx, ny, nz;
   nx = y1 * (z2 - z3) + y2 * (z3 - z1) + y3 * (z1 - z2);
   ny = z1 * (x2 - x3) + z2 * (x3 - x1) + z3 * (x1 - x2);
@@ -224,82 +229,6 @@ void drawFloor(void) {
     glVertex3f(i, -0.75, 100);
     glEnd();
   }
-}
-
-/**
- * @brief Draws the cannon.
- *
- */
-void drawCannon(void) {
-  glColor3d(0.4, 0.5, 0.4);
-
-  glBegin(GL_TRIANGLES);
-  for (int tindx = 0; tindx < num_triangles; tindx++) {
-    normal(tindx);
-    glVertex3d(x_cannon_mesh[t1[tindx]], y_cannon_mesh[t1[tindx]],
-               z_cannon_mesh[t1[tindx]]);
-    glVertex3d(x_cannon_mesh[t2[tindx]], y_cannon_mesh[t2[tindx]],
-               z_cannon_mesh[t2[tindx]]);
-    glVertex3d(x_cannon_mesh[t3[tindx]], y_cannon_mesh[t3[tindx]],
-               z_cannon_mesh[t3[tindx]]);
-  }
-  glEnd();
-}
-
-void cannonBall(void) {
-  glPushMatrix();
-  glTranslated(ball_x, ball_y, ball_z);
-  glutSolidSphere(0.7, 36, 18);
-  glPopMatrix();
-}
-
-/**
- * @brief Draws the castle, and it's constituent supports.
- *
- */
-void cannon(void) {
-  glPushMatrix();
-  // Global transitions
-  glTranslated(0.0, 0.0, 50.0);
-  glRotated(-90.0, 0.0, 1.0, 0.0);
-  glScaled(0.1, 0.1, 0.1);
-
-  // Cannon
-  glPushMatrix();
-  glTranslated(-20.0, 30.0, 0);
-  glRotated(15.0, 0, 0, 1);
-  glTranslated(20.0, -30.0, 0);
-  drawCannon();
-  glPopMatrix();
-
-  // Supports
-  glPushMatrix();
-  glTranslated(-10.0, 5.0, 17.0);
-  glScaled(80.0, 10.0, 6.0);
-  glutSolidCube(1);
-  glPopMatrix();
-
-  glPushMatrix();
-  glTranslated(-20.0, 25.0, 17.0);
-  glScaled(40.0, 30.0, 6.0);
-  glutSolidCube(1);
-  glPopMatrix();
-
-  glPushMatrix();
-  glTranslated(-10.0, 5.0, -17.0);
-  glScaled(80.0, 10.0, 6.0);
-  glutSolidCube(1);
-  glPopMatrix();
-
-  glPushMatrix();
-  glTranslated(-20.0, 25.0, -17.0);
-  glScaled(40.0, 30.0, 6.0);
-  glutSolidCube(1);
-  glPopMatrix();
-
-  glPopMatrix();
-
-  cannonBall();
 }
 
 /**
