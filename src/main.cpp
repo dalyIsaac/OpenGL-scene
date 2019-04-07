@@ -218,17 +218,27 @@ static void keyboard(unsigned char key, int x, int y) {
  * @brief Draws a grid of lines on the floor plane.
  *
  */
-static void drawFloor(void) {
-  glColor3d(0., 0.5, 0.); // Floor colour
+static void floor(void) {
+  float white[4] = {1., 1., 1., 1.};
+  float black[4] = {0};
+  glColor4f(0.7, 0.7, 0.7, 1.0); // The floor is gray in colour
+  glNormal3f(0.0, 1.0, 0.0);
 
-  for (int i = -100; i <= 100; i++) {
-    glBegin(GL_LINES); // A set of grid lines on the xz-plane
-    glVertex3f(-100, -0.75, i);
-    glVertex3f(100, -0.75, i);
-    glVertex3f(i, -0.75, -100);
-    glVertex3f(i, -0.75, 100);
-    glEnd();
+  // The floor is made up of several tiny squares on a 200x200 grid. Each square
+  // has a unit size.
+  glMaterialfv(GL_FRONT, GL_SPECULAR,
+               black); // suppresses specular reflections from the floor
+  glBegin(GL_QUADS);
+  for (int i = -200; i < 200; i++) {
+    for (int j = -200; j < 200; j++) {
+      glVertex3f(i, 0, j);
+      glVertex3f(i, 0, j + 1);
+      glVertex3f(i + 1, 0, j + 1);
+      glVertex3f(i + 1, 0, j);
+    }
   }
+  glEnd();
+  glMaterialfv(GL_FRONT, GL_SPECULAR, white);
 }
 
 /**
@@ -236,7 +246,9 @@ static void drawFloor(void) {
  *
  */
 static void display(void) {
-  float lightPosition[4] = {0., 10., 10., 1.0};
+  float light_pos[] = {0.0f, 50.0f, 50.0f, 1.0f};
+  float spot_pos[] = {-10.0, 14.0, 0.0, 1.0};
+  float spot_dir[] = {-10.0, -10.0, 0.0, 0.0};
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glMatrixMode(GL_MODELVIEW);
@@ -246,15 +258,9 @@ static void display(void) {
   gluLookAt(eye_x, eye_y, eye_z, look_x, look_y, look_z, 0, 1, 0);
 
   // Sets the light's position
-  glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+  glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
 
-  // Disables lighting when drawing the floor
-  glDisable(GL_LIGHTING);
-  drawFloor();
-
-  // Enables lighting when drawing the scene
-  glEnable(GL_LIGHTING);
-
+  floor();
   castle();
   cannon();
   spaceship();
@@ -263,7 +269,7 @@ static void display(void) {
     draw_robot(r);
   }
 
-  glFlush();
+  glutSwapBuffers();
 }
 
 /**
@@ -271,24 +277,44 @@ static void display(void) {
  *
  */
 static void initialize(void) {
+  float grey[4] = {0.2, 0.2, 0.2, 1.0};
+  float white[4] = {1.0, 1.0, 1.0, 1.0};
+
   q = gluNewQuadric();
+  gluQuadricTexture(q, GL_TRUE);
 
   loadTexture();
   loadMeshFile("models/Cannon.off");
 
-  // Background color
-  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-
-  // Enables OpenGL states
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
-  glEnable(GL_COLOR_MATERIAL);
+  // glEnable(GL_LIGHT1);
+
+  //	Define light's ambient, diffuse, specular properties
+  glLightfv(GL_LIGHT0, GL_AMBIENT, grey);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, white);
+
+  // glLightfv(GL_LIGHT1, GL_AMBIENT, grey);
+  // glLightfv(GL_LIGHT1, GL_DIFFUSE, white);
+  // glLightfv(GL_LIGHT1, GL_SPECULAR, white);
+
+  // glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 30.0);
+  // glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 0.01);
+
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_NORMALIZE);
+  gluQuadricDrawStyle(q, GLU_FILL);
+  glClearColor(0.0, 0.0, 0.0, 0.0); // Background colour
 
-  gluQuadricTexture(q, GL_TRUE);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
+
+  glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+  glEnable(GL_COLOR_MATERIAL);
+
+  glMaterialfv(GL_FRONT, GL_SPECULAR, white);
+  glMaterialf(GL_FRONT, GL_SHININESS, 50);
 
   glFrustum(-5.0, 5.0, -5.0, 5.0, 10.0, 1000.0);
 }
