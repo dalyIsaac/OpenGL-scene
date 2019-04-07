@@ -37,21 +37,13 @@ static void fin(GLdouble translate_x = 0.0, GLdouble translate_y = 0.0,
  *
  */
 void spaceship(void) {
-  float red_light_pos[] = {2.0f, 4.0f + spaceship_altitude, 0.0f, 1.0f};
-  float red_light_spot_dir[] = {-20.0f, -10.0f, 0.0f, 0.0f};
-  float green_light_pos[] = {2.0f, 4.0f + spaceship_altitude, 0.0f, 1.0f};
-  float green_light_spot_dir[] = {20.0f, -10.0f, 0.0f, 0.0f};
+  float red_pos[] = {-2.0f, 14.0f + spaceship_altitude, 0.0f, 1.0f};
+  float red_spot_dir[] = {-10.0f, -10.0f, 0.0f, 0.0f};
+  float green_pos[] = {2.0f, 14.0f + spaceship_altitude, 0.0f, 1.0f};
+  float green_spot_dir[] = {10.0f, -10.0f, 0.0f, 0.0f};
 
   glPushMatrix();
   glTranslatef(0.0, spaceship_altitude, 0.0);
-
-  // Red light
-  glLightfv(GL_LIGHT1, GL_POSITION, red_light_pos);
-  glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, red_light_spot_dir);
-
-  // Green light
-  glLightfv(GL_LIGHT2, GL_POSITION, green_light_pos);
-  glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, green_light_spot_dir);
 
   // Fuselage
   glPushMatrix();
@@ -71,6 +63,30 @@ void spaceship(void) {
   fin(2.0);
   fin(2.0, 0.0, 0.0, 120.0, 0.0, 1.0, 0.0);
   fin(2.0, 0.0, 0.0, 240.0, 0.0, 1.0, 0.0);
+  glPopMatrix();
+
+  // Red light
+  glLightfv(GL_LIGHT1, GL_POSITION, red_pos);
+  glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, red_spot_dir);
+
+  // Red light disk
+  glPushMatrix();
+  glTranslated(red_pos[0], red_pos[1], red_pos[2]);
+  glRotated(90.0, 0.0, 1.0, 0.0);
+  glColor3f(red[0], red[1], red[2]);
+  gluDisk(q, 0.0, 0.5, 20, 2);
+  glPopMatrix();
+
+  // Green light
+  glLightfv(GL_LIGHT2, GL_POSITION, green_pos);
+  glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, green_spot_dir);
+
+  // Green light disk
+  glPushMatrix();
+  glTranslated(green_pos[0], green_pos[1], green_pos[2]);
+  glRotated(90.0, 0.0, 1.0, 0.0);
+  glColor3f(green[0], green[1], green[2]);
+  gluDisk(q, 0.0, 0.5, 20, 2);
   glPopMatrix();
 
   glPopMatrix();

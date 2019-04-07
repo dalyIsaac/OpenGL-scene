@@ -3,4 +3,7 @@
 extern GLuint txId[3];
 extern GLUquadric *q;
 
+extern float red[4];
+extern float green[4];
+
 void normal(int tindx);

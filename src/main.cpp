@@ -14,6 +14,9 @@ using namespace std;
 GLuint txId[3]; // Texture ids
 GLUquadricObj *q;
 
+float red[4] = {1.0f, 0.16f, 0.16f, 1.0f};
+float green[4] = {0.16f, 1.0f, 0.321f, 1.0f};
+
 static double radians_five = 0.0872665;
 
 static double camera_angle = 0;
@@ -259,8 +262,6 @@ static void display(void) {
 static void initialize(void) {
   float grey[4] = {0.2f, 0.2f, 0.2f, 1.0f};
   float white[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-  float red[4] = {1.0f, 0.16f, 0.16f, 1.0f};
-  float green[4] = {0.16f, 1.0f, 0.321f, 1.0f};
 
   q = gluNewQuadric();
   gluQuadricTexture(q, GL_TRUE);
