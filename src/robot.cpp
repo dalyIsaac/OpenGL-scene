@@ -1,5 +1,6 @@
 #include "robot.h"
 #include <GL/freeglut.h>
+#include <cmath>
 
 /**
  * @brief Draws a single robot.
@@ -7,7 +8,8 @@
  */
 void draw_robot(Robot robot) {
   glPushMatrix();
-  glTranslated(0.0, 0.0, robot.rotation_translation);
+  glTranslated(robot.rotation_translation_x, robot.rotation_translation_y,
+               robot.rotation_translation_z);
   glRotated(robot.rotation_angle, 0.0, 1.0, 0.0);
   glTranslated(robot.x, robot.y, robot.z);
   glRotated(robot.direction_angle, 0.0, 1.0, 0.0);
@@ -74,7 +76,7 @@ void draw_robot(Robot robot) {
   glPopMatrix();
 }
 
-void robot_leg_movement(Robot *robot, double delta) {
+void robot_limb_movement(Robot *robot, double delta) {
   if (robot->limb_angle >= 45.0) {
     robot->right_leg_moving_forward = false;
   } else if (robot->limb_angle <= -45.0) {
@@ -88,7 +90,7 @@ void robot_leg_movement(Robot *robot, double delta) {
 }
 
 void robot_0_movement(Robot *robot) {
-  robot_leg_movement(robot, 15.0);
+  robot_limb_movement(robot, 15.0);
   if (robot->x == 30.0 && robot->z <= 10.0 && robot->z > -50) {
     // Move up
     robot->z--;
@@ -109,15 +111,46 @@ void robot_0_movement(Robot *robot) {
 }
 
 void robot_1_movement(Robot *robot) {
-  static bool circular_path = true;
-  robot_leg_movement(robot, 4.0);
-  if (circular_path) {
-    robot->rotation_angle -= 1;
-    if (robot->rotation_angle <= 0.0) {
-      robot->rotation_angle = 360.0;
+  static RobotMovement movement = RobotMovement::In;
+
+  switch (movement) {
+  case RobotMovement::In:
+    robot->z -= 0.25;
+
+    if (robot->z > -10.0 && robot->z <= -5.0) {
+      robot->direction_angle = fmod(robot->direction_angle + 4.5, 180.0);
     }
-  } else {
-    // TODO
+
+    if (robot->x == 0.0 && robot->z == -10.0) {
+      robot->x = 0;
+      robot->z = 10;
+      robot->rotation_translation_z = -20;
+      movement = RobotMovement::Rotating;
+    }
+    break;
+  case RobotMovement::Rotating:
+    robot->rotation_angle--;
+
+    if (robot->rotation_angle <= -60.0) {
+      robot->direction_angle = fmod(robot->direction_angle + 3.0, 180.0);
+    }
+
+    if (robot->direction_angle == 0.0) {
+      robot->rotation_angle = -90.0;
+      robot->x = 0.0;
+      robot->z = -10.0;
+      movement = RobotMovement::Out;
+    }
+    break;
+  case RobotMovement::Out:
+    robot->z += 0.25;
+
+    if (robot->z >= 5.0) {
+      movement = RobotMovement::In;
+    }
+    break;
+  default:
+    break;
   }
 }
 
@@ -129,17 +162,21 @@ Robot robots[ROBOTS_LENGTH] = {{
                                  limb_angle : 0.0,
                                  right_leg_moving_forward : true,
                                  rotation_angle : 0.0,
-                                 rotation_translation : 0.0,
+                                 rotation_translation_x : 0.0,
+                                 rotation_translation_y : 0.0,
+                                 rotation_translation_z : 0.0,
                                  movement : robot_0_movement
                                },
                                {
-                                 x : 00.0,
+                                 x : 0.0,
                                  y : 0.0,
-                                 z : 10.0,
-                                 direction_angle : 90.0,
+                                 z : 5.0,
+                                 direction_angle : 0.0,
                                  limb_angle : 0.0,
                                  right_leg_moving_forward : true,
                                  rotation_angle : 0.0,
-                                 rotation_translation : -20.0,
+                                 rotation_translation_x : 0.0,
+                                 rotation_translation_y : 0.0,
+                                 rotation_translation_z : 0.0,
                                  movement : robot_1_movement
                                }};
