@@ -113,6 +113,7 @@ void robot_0_movement(Robot *robot) {
 void robot_1_movement(Robot *robot) {
   static RobotMovement movement = RobotMovement::In;
 
+  robot_limb_movement(robot, 4.0);
   switch (movement) {
   case RobotMovement::In:
     robot->z -= 0.25;
