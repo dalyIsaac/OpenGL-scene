@@ -39,6 +39,7 @@ static double ball_y = 4.8;
 static double ball_z = 54.5;
 
 static GLuint txId[2]; // Texture ids
+static GLUquadricObj *q;
 
 /**
  * @brief Loads the OFF mesh file.
@@ -92,16 +93,16 @@ void loadTexture() {
   glGenTextures(2, txId); // Create 2 texture ids
 
   glBindTexture(GL_TEXTURE_2D, txId[0]); // Use this texture
-  loadTGA("media/brick.tga");
+  loadTGA("textures/wall.tga");
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
                   GL_LINEAR); // Set texture parameters
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-  // glBindTexture(GL_TEXTURE_2D, txId[1]);  //Use this texture
-  //   loadTGA("Yard/Floor.tga");
-  // glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);	//Set
-  // texture parameters
-  // glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+  glBindTexture(GL_TEXTURE_2D, txId[1]); // Use this texture
+  loadTGA("textures/tower.tga");
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                  GL_LINEAR); // Set texture parameters
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 }
@@ -310,9 +311,12 @@ void castleTower(GLdouble x = 0.0, GLdouble y = 0.0, GLdouble z = 0.0) {
   glTranslated(x, y, z);
 
   // Tower base
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, txId[1]);
   glPushMatrix();
   glRotated(-90.0, 1.0, 0.0, 0.0);
-  glutSolidCylinder(5.0, tower_height, 100.0, 100.0);
+  // glutSolidCylinder(5.0, tower_height, 100.0, 100.0);
+  gluCylinder(q, 5.0, 5.0, tower_height, 100.0, 100.0);
   glPopMatrix();
 
   // Tower root
@@ -601,6 +605,8 @@ void display(void) {
  *
  */
 void initialize(void) {
+  q = gluNewQuadric();
+
   loadTexture();
   loadMeshFile("models/Cannon.off");
 
@@ -614,6 +620,7 @@ void initialize(void) {
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_NORMALIZE);
 
+  gluQuadricTexture(q, GL_TRUE);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
 
