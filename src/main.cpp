@@ -1,6 +1,8 @@
+#include "main.h"
 #include "castle.h"
 #include "loadBMP.h"
 #include "robot.h"
+#include "spaceship.h"
 #include <GL/freeglut.h>
 #include <climits>
 #include <cmath>
@@ -10,6 +12,9 @@ using namespace std;
 
 GLuint txId[3]; // Texture ids
 GLUquadricObj *q;
+double spaceship_altitude = 0.0;
+double spaceship_height = 20.0;
+bool spaceship_flying = false;
 
 static double *x_cannon_mesh;
 static double *y_cannon_mesh;
@@ -32,10 +37,6 @@ static double eye_z = 100.0;
 static double look_x = 0;
 static double look_y = 0.0;
 static double look_z = 1;
-
-static bool spaceship_flying = false;
-static double spaceship_height = 20.0;
-static double spaceship_altitude = 0.0;
 
 static bool ball_fired = false;
 static double ball_x = 0.0;
@@ -299,64 +300,6 @@ void cannon(void) {
   glPopMatrix();
 
   cannonBall();
-}
-
-/**
- * @brief Draws a rocket fin.
- *
- * @param translate_x
- * @param translate_y
- * @param translate_z
- * @param angle
- * @param rotate_x
- * @param rotate_y
- * @param rotate_z
- */
-void fin(GLdouble translate_x = 0.0, GLdouble translate_y = 0.0,
-         GLdouble translate_z = 0.0, GLdouble angle = 0.0,
-         GLdouble rotate_x = 0.0, GLdouble rotate_y = 0.0,
-         GLdouble rotate_z = 0.0) {
-  glPushMatrix();
-  // glRotated(angle, rotate_x, rotate_y, rotate_z);
-  glRotated(angle, rotate_x, rotate_y, rotate_z);
-  glTranslated(translate_x, translate_y, translate_z);
-  glBegin(GL_TRIANGLE_STRIP);
-  glVertex3f(0.0, 9.0, 0.0);
-  glVertex3f(0.0, 0.0, 0.0);
-  glVertex3f(5.0, 0.0, 0.0);
-  glEnd();
-  glPopMatrix();
-}
-
-/**
- * @brief Draws the spaceship.
- *
- */
-void spaceship(void) {
-  glPushMatrix();
-  glTranslated(0.0, spaceship_altitude, 0.0);
-
-  // Fuselage
-  glPushMatrix();
-  glTranslated(0.0, 4.0, 0.0);
-  glRotated(-90.0, 1.0, 0.0, 0.0);
-  glutSolidCylinder(2.0, spaceship_height, 100.0, 100.0);
-  glPopMatrix();
-
-  // Tower root
-  glPushMatrix();
-  glTranslated(0.0, 4.0 + spaceship_height, 0.0);
-  glRotated(-90.0, 1.0, 0.0, 0.0);
-  glutSolidCone(2.0, 6.0, 100.0, 100.0);
-  glPopMatrix();
-
-  glPushMatrix();
-  fin(2.0);
-  fin(2.0, 0.0, 0.0, 120.0, 0.0, 1.0, 0.0);
-  fin(2.0, 0.0, 0.0, 240.0, 0.0, 1.0, 0.0);
-  glPopMatrix();
-
-  glPopMatrix();
 }
 
 /**
