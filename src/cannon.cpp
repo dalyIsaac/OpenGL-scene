@@ -5,9 +5,10 @@
 
 bool ball_fired = false;
 
-const double ball_x_initial = 0.0;
-const double ball_y_initial = 4.8;
-const double ball_z_initial = 54.5;
+static double ball_radius = 0.7;
+double ball_x_initial = 0.0;
+double ball_y_initial = 4.8;
+double ball_z_initial = 54.5;
 
 double ball_x = ball_x_initial;
 double ball_y = ball_y_initial;
@@ -26,8 +27,15 @@ int *cannon_t3;
 
 static double cannon_angle = 15.0;
 static double gradient = tan(cannon_angle * M_PI / 180);
-static double time = 0.0;
-static const double middle = 50.0;
+static double time = ball_z_initial;
+static double delta_z = 4.0;
+static double decr = 0.04;
+static bool ball_moving = true;
+static bool ball_ending = false;
+static bool ball_rolling = false;
+
+static const double power = 400.0; // increase power -> decrease in constant
+static const double constant = 1 / power;
 
 /**
  * @brief Draws the cannon.
@@ -52,7 +60,7 @@ static void drawCannon(void) {
 static void cannonBall(void) {
   glPushMatrix();
   glTranslated(ball_x, ball_y, ball_z);
-  glutSolidSphere(0.7, 36, 18);
+  glutSolidSphere(ball_radius, 36, 18);
   glPopMatrix();
 }
 
@@ -106,13 +114,43 @@ void cannon(void) {
 }
 
 void cannonBallPhysics(void) {
-  time += 0.1;
-  ball_y = -pow(time, 2.0) + (gradient + 2 * ball_x_initial) * time +
-           ball_y_initial + pow(ball_x_initial, 2.0) -
-           (gradient + 2 * ball_x_initial) * ball_x_initial;
-  if (ball_y <= 0.0) {
-    ball_y = 0.0;
-  } else {
-    ball_x = time;
+  time += delta_z;
+  double z = time;
+  if (ball_rolling) {
+    ball_y = ball_radius;
+    delta_z -= decr;
+    ball_z = z;
+    if (delta_z <= 0.0) {
+      ball_rolling = false;
+      ball_moving = false;
+    }
+  } else if (ball_moving) {
+    if (ball_ending == false) {
+      delta_z -= decr;
+    }
+
+    // Used to detect when delta_z is less than a minimum value. If delta_z is
+    // below this value, then to prevent the ball from hanging in the air, the
+    // decrease in delta_z is temporarily halted until the ball hits the ground.
+    // Afterwards, it rolls to a stop.
+    if (delta_z <= 1.0) {
+      ball_ending = true;
+    }
+
+    double reused = gradient + 2 * constant * ball_z_initial;
+    ball_y = -(constant * pow(z, 2.0)) + reused * z + ball_y_initial +
+             constant * pow(ball_z_initial, 2.0) - reused * ball_z_initial;
+    if (ball_y <= 0.0) {
+      if (ball_ending) {
+        ball_rolling = true;
+        ball_z = z;
+      } else {
+        time = ball_z_initial;
+        ball_y_initial = 0;
+        ball_z_initial = ball_z;
+      }
+    } else {
+      ball_z = z;
+    }
   }
 }

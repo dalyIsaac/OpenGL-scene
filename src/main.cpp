@@ -216,13 +216,13 @@ static void floor(void) {
   glColor4f(0.7, 0.7, 0.7, 1.0); // The floor is gray in colour
   glNormal3f(0.0, 1.0, 0.0);
 
-  // The floor is made up of several tiny squares on a 200x200 grid. Each square
+  // The floor is made up of several tiny squares on a 500x500 grid. Each square
   // has a unit size.
   glMaterialfv(GL_FRONT, GL_SPECULAR,
                black); // suppresses specular reflections from the floor
   glBegin(GL_QUADS);
-  for (int i = -200; i < 200; i++) {
-    for (int j = -200; j < 200; j++) {
+  for (int i = -500; i < 500; i++) {
+    for (int j = -500; j < 500; j++) {
       glVertex3f(i, 0, j);
       glVertex3f(i, 0, j + 1);
       glVertex3f(i + 1, 0, j + 1);
