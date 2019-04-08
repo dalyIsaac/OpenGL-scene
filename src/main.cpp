@@ -17,7 +17,11 @@ GLUquadricObj *q;
 float red[4] = {1.0f, 0.16f, 0.16f, 1.0f};
 float green[4] = {0.16f, 1.0f, 0.321f, 1.0f};
 
-float light_pos[4] = {0.0f, 50.0f, 50.0f, 1.0f};
+float lx = 0.0f;
+float ly = 50.0f;
+float lz = 50.0f;
+float light_pos[4] = {lx, ly, lz, 1.0f};
+float shadowMat[16] = {ly, 0, 0, 0, -lx, 0, -lz, -1, 0, 0, ly, 0, 0, 0, 0, ly};
 
 static double radians_five = 0.0872665;
 

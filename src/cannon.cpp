@@ -62,12 +62,6 @@ static void drawCannon(void) {
  *
  */
 static void cannonBall(void) {
-  float gx = light_pos[0];
-  float gy = light_pos[1];
-  float gz = light_pos[2];
-  float shadowMat[16] = {gy, 0, 0,  0, -gx, 0, -gz, -1,
-                         0,  0, gy, 0, 0,   0, 0,   gy};
-
   // Cannonball
   glPushMatrix();
   glTranslated(ball_x, ball_y, ball_z);
@@ -85,12 +79,13 @@ static void cannonBall(void) {
   glEnable(GL_LIGHTING);
 }
 
-/**
- * @brief Draws the castle, and it's constituent supports.
- *
- */
-void cannon(void) {
+void _cannon(bool isShadow) {
   glPushMatrix();
+  if (isShadow) {
+    glDisable(GL_LIGHTING);
+    glMultMatrixf(shadowMat);
+  }
+
   // Global transitions
   glTranslated(0.0, 0.0, 50.0);
   glRotated(-90.0, 0.0, 1.0, 0.0);
@@ -129,7 +124,21 @@ void cannon(void) {
   glutSolidCube(1);
   glPopMatrix();
 
+  if (isShadow) {
+    glColor4f(0.2, 0.2, 0.2, 1.0);
+  }
+
   glPopMatrix();
+  glEnable(GL_LIGHTING);
+}
+
+/**
+ * @brief Draws the castle, and it's constituent supports.
+ *
+ */
+void cannon(void) {
+  _cannon(true);
+  _cannon(false);
 
   cannonBall();
 }
