@@ -15,3 +15,4 @@ extern int *cannon_t2;
 extern int *cannon_t3;
 
 void cannon(void);
+void cannonBallPhysics(void);

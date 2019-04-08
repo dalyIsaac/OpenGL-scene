@@ -1,11 +1,17 @@
 #include "cannon.h"
 #include "main.h"
 #include <GL/freeglut.h>
+#include <cmath>
 
 bool ball_fired = false;
-double ball_x = 0.0;
-double ball_y = 4.8;
-double ball_z = 54.5;
+
+const double ball_x_initial = 0.0;
+const double ball_y_initial = 4.8;
+const double ball_z_initial = 54.5;
+
+double ball_x = ball_x_initial;
+double ball_y = ball_y_initial;
+double ball_z = ball_z_initial;
 
 int cannon_num_vertices;
 int cannon_num_triangles;
@@ -17,6 +23,11 @@ double *z_cannon_mesh;
 int *cannon_t1;
 int *cannon_t2;
 int *cannon_t3;
+
+static double cannon_angle = 15.0;
+static double gradient = tan(cannon_angle * M_PI / 180);
+static double time = 0.0;
+static const double middle = 50.0;
 
 /**
  * @brief Draws the cannon.
@@ -59,7 +70,7 @@ void cannon(void) {
   // Cannon
   glPushMatrix();
   glTranslated(-20.0, 30.0, 0);
-  glRotated(15.0, 0, 0, 1);
+  glRotated(cannon_angle, 0, 0, 1);
   glTranslated(20.0, -30.0, 0);
   drawCannon();
   glPopMatrix();
@@ -92,4 +103,16 @@ void cannon(void) {
   glPopMatrix();
 
   cannonBall();
+}
+
+void cannonBallPhysics(void) {
+  time += 0.1;
+  ball_y = -pow(time, 2.0) + (gradient + 2 * ball_x_initial) * time +
+           ball_y_initial + pow(ball_x_initial, 2.0) -
+           (gradient + 2 * ball_x_initial) * ball_x_initial;
+  if (ball_y <= 0.0) {
+    ball_y = 0.0;
+  } else {
+    ball_x = time;
+  }
 }

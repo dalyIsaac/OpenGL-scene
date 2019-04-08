@@ -19,14 +19,22 @@ float green[4] = {0.16f, 1.0f, 0.321f, 1.0f};
 
 static double radians_five = 0.0872665;
 
-static double camera_angle = 0;
+// static double camera_angle = 0;
+static double camera_angle = 1.5707969999999996;
 
-static double eye_x = 0.0;
+// static double eye_x = 0.0;
+// static double eye_y = 20.0;
+// static double eye_z = 100.0;
+// static double look_x = 0;
+// static double look_y = 0.0;
+// static double look_z = 1;
+
+static double eye_x = -125.49999999997148;
 static double eye_y = 20.0;
-static double eye_z = 100.0;
-static double look_x = 0;
+static double eye_z = 99.999915512758989;
+static double look_x = -99.999915512758989;
 static double look_y = 0.0;
-static double look_z = 1;
+static double look_z = 99.999982833269286;
 
 /**
  * @brief Loads the OFF mesh file.
@@ -124,8 +132,9 @@ static void generalTimer(int value) {
     spaceship_altitude++;
   }
   if (ball_fired) {
-    ball_z++;
-    ball_y++;
+    // ball_z++;
+    // ball_y++;
+    cannonBallPhysics();
   }
   for (int i = 0; i < ROBOTS_LENGTH; i++) {
     Robot *r = &(robots[i]);
