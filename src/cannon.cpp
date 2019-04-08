@@ -5,6 +5,7 @@
 
 bool ball_fired = false;
 
+static double ball_radius = 0.7;
 double ball_x_initial = 0.0;
 double ball_y_initial = 4.8;
 double ball_z_initial = 54.5;
@@ -27,12 +28,13 @@ int *cannon_t3;
 static double cannon_angle = 15.0;
 static double gradient = tan(cannon_angle * M_PI / 180);
 static double time = ball_z_initial;
-static double delta_z = 2.0;
+static double delta_z = 4.0;
+static double decr = 0.04;
 static bool ball_moving = true;
 static bool ball_ending = false;
 static bool ball_rolling = false;
 
-static const double power = 200.0; // increase power -> decrease in constant
+static const double power = 400.0; // increase power -> decrease in constant
 static const double constant = 1 / power;
 
 /**
@@ -58,7 +60,7 @@ static void drawCannon(void) {
 static void cannonBall(void) {
   glPushMatrix();
   glTranslated(ball_x, ball_y, ball_z);
-  glutSolidSphere(0.7, 36, 18);
+  glutSolidSphere(ball_radius, 36, 18);
   glPopMatrix();
 }
 
@@ -115,7 +117,8 @@ void cannonBallPhysics(void) {
   time += delta_z;
   double z = time;
   if (ball_rolling) {
-    delta_z -= 0.01;
+    ball_y = ball_radius;
+    delta_z -= decr;
     ball_z = z;
     if (delta_z <= 0.0) {
       ball_rolling = false;
@@ -123,9 +126,13 @@ void cannonBallPhysics(void) {
     }
   } else if (ball_moving) {
     if (ball_ending == false) {
-      delta_z -= 0.01;
+      delta_z -= decr;
     }
 
+    // Used to detect when delta_z is less than a minimum value. If delta_z is
+    // below this value, then to prevent the ball from hanging in the air, the
+    // decrease in delta_z is temporarily halted until the ball hits the ground.
+    // Afterwards, it rolls to a stop.
     if (delta_z <= 1.0) {
       ball_ending = true;
     }
