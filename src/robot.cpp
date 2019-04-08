@@ -124,7 +124,7 @@ static void robot_1_movement(Robot *robot) {
       robot->z -= 0.25;
 
       if (robot->z <= 15.0 && robot->z > 10.0) {
-        robot->direction_angle = fmod(robot->direction_angle + 4.5, 180.0);
+        robot->direction_angle = fmod(robot->direction_angle + 4.5, 360.0);
       }
 
       if (robot->x == 0.0 && robot->z == 10.0) {
@@ -135,7 +135,7 @@ static void robot_1_movement(Robot *robot) {
       robot->rotation_angle--;
 
       if (fmod(robot->rotation_angle, 90.0) <= -60.0) {
-        robot->direction_angle = fmod(robot->direction_angle + 3.0, 180.0);
+        robot->direction_angle = fmod(robot->direction_angle + 3.0, 360.0);
       }
 
       if (robot->direction_angle == 0.0) {
@@ -146,6 +146,13 @@ static void robot_1_movement(Robot *robot) {
       robot->z += 0.25;
 
       if (robot->z >= 25.0) {
+        movement = RobotMovement::ChangingDirection;
+      }
+      break;
+    case RobotMovement::ChangingDirection:
+      robot->direction_angle = fmod(robot->direction_angle + 3.0, 360.0);
+
+      if (robot->direction_angle == 180.0) {
         movement = RobotMovement::In;
       }
       break;
@@ -170,7 +177,7 @@ Robot robots[NUM_ROBOTS] = {{
                               x : 0.0,
                               y : 0.0,
                               z : 25.0,
-                              direction_angle : 0.0,
+                              direction_angle : 180.0,
                               limb_angle : 0.0,
                               right_leg_moving_forward : true,
                               rotation_angle : 0.0,
