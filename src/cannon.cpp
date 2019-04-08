@@ -29,6 +29,8 @@ static double gradient = tan(cannon_angle * M_PI / 180);
 static double time = ball_z_initial;
 static double delta_z = 2.0;
 static bool ball_moving = true;
+static bool ball_ending = false;
+static bool ball_rolling = false;
 
 static const double power = 200.0; // increase power -> decrease in constant
 static const double constant = 1 / power;
@@ -110,22 +112,36 @@ void cannon(void) {
 }
 
 void cannonBallPhysics(void) {
-  if (ball_moving) {
-    time += delta_z;
-    delta_z -= 0.02;
-
+  time += delta_z;
+  double z = time;
+  if (ball_rolling) {
+    delta_z -= 0.01;
+    ball_z = z;
     if (delta_z <= 0.0) {
+      ball_rolling = false;
       ball_moving = false;
     }
+  } else if (ball_moving) {
+    if (ball_ending == false) {
+      delta_z -= 0.01;
+    }
 
-    double z = time;
+    if (delta_z <= 1.0) {
+      ball_ending = true;
+    }
+
     double reused = gradient + 2 * constant * ball_z_initial;
     ball_y = -(constant * pow(z, 2.0)) + reused * z + ball_y_initial +
              constant * pow(ball_z_initial, 2.0) - reused * ball_z_initial;
     if (ball_y <= 0.0) {
-      time = ball_z_initial;
-      ball_y_initial = 0;
-      ball_z_initial = ball_z;
+      if (ball_ending) {
+        ball_rolling = true;
+        ball_z = z;
+      } else {
+        time = ball_z_initial;
+        ball_y_initial = 0;
+        ball_z_initial = ball_z;
+      }
     } else {
       ball_z = z;
     }
