@@ -29,7 +29,7 @@ static double cannon_angle = 15.0;
 static double gradient = tan(cannon_angle * M_PI / 180);
 static double time = ball_z_initial;
 static double delta_z = 4.0;
-static double decr = 0.04;
+static double decr = 0.03;
 static bool ball_moving = true;
 static bool ball_ending = false;
 static bool ball_rolling = false;
@@ -57,11 +57,32 @@ static void drawCannon(void) {
   glEnd();
 }
 
+/**
+ * @brief Draws the cannonball, and its shadow.
+ *
+ */
 static void cannonBall(void) {
+  float gx = light_pos[0];
+  float gy = light_pos[1];
+  float gz = light_pos[2];
+  float shadowMat[16] = {gy, 0, 0,  0, -gx, 0, -gz, -1,
+                         0,  0, gy, 0, 0,   0, 0,   gy};
+
+  // Cannonball
   glPushMatrix();
   glTranslated(ball_x, ball_y, ball_z);
   glutSolidSphere(ball_radius, 36, 18);
   glPopMatrix();
+
+  // Shadow cannonball
+  glDisable(GL_LIGHTING);
+  glPushMatrix();
+  glMultMatrixf(shadowMat);
+  glTranslated(ball_x, ball_y, ball_z);
+  glColor4f(0.2, 0.2, 0.2, 1.0);
+  glutSolidSphere(ball_radius, 36, 18);
+  glPopMatrix();
+  glEnable(GL_LIGHTING);
 }
 
 /**
@@ -113,6 +134,10 @@ void cannon(void) {
   cannonBall();
 }
 
+/**
+ * @brief Defines the behavior of the cannonball.
+ *
+ */
 void cannonBallPhysics(void) {
   time += delta_z;
   double z = time;
@@ -133,7 +158,7 @@ void cannonBallPhysics(void) {
     // below this value, then to prevent the ball from hanging in the air, the
     // decrease in delta_z is temporarily halted until the ball hits the ground.
     // Afterwards, it rolls to a stop.
-    if (delta_z <= 1.0) {
+    if (delta_z <= 1.25) {
       ball_ending = true;
     }
 

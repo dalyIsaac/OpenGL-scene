@@ -17,6 +17,8 @@ GLUquadricObj *q;
 float red[4] = {1.0f, 0.16f, 0.16f, 1.0f};
 float green[4] = {0.16f, 1.0f, 0.321f, 1.0f};
 
+float light_pos[4] = {0.0f, 50.0f, 50.0f, 1.0f};
+
 static double radians_five = 0.0872665;
 
 // static double camera_angle = 0;
@@ -238,7 +240,6 @@ static void floor(void) {
  *
  */
 static void display(void) {
-  float light_pos[] = {0.0f, 50.0f, 50.0f, 1.0f};
   float spot_pos[] = {-10.0, 14.0, 0.0, 1.0};
   float spot_dir[] = {-10.0, -10.0, 0.0, 0.0};
 
