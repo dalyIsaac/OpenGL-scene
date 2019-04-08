@@ -28,12 +28,17 @@ static double radians_five = 0.0872665;
 
 static double camera_angle = 0;
 
-static double eye_x = 0.0;
-static double eye_y = 20.0;
-static double eye_z = 100.0;
-static double look_x = 0;
-static double look_y = 0.0;
-static double look_z = 1;
+static double mobile_cam[6] = {0.0, 20.0, 100.0, 0.0, 0.0, 1.0};
+static double spaceship_cam_ground[6] = {0.0, 18.0, spaceship_radius,
+                                         0.0, 0.0,  45.0};
+static bool is_mobile_cam = true;
+
+static double *eye_x = &mobile_cam[0];
+static double *eye_y = &mobile_cam[1];
+static double *eye_z = &mobile_cam[2];
+static double *look_x = &mobile_cam[3];
+static double *look_y = &mobile_cam[4];
+static double *look_z = &mobile_cam[5];
 
 /**
  * @brief Loads the OFF mesh file.
@@ -152,33 +157,52 @@ static void generalTimer(int value) {
  * @param y
  */
 static void special(int key, int x, int y) {
-  switch (key) {
-    case GLUT_KEY_UP:
-      eye_x += 0.5 * sin(camera_angle);
-      eye_z -= 0.5 * cos(camera_angle);
-      break;
-    case GLUT_KEY_DOWN:
-      eye_x -= 0.5 * sin(camera_angle);
-      eye_z += 0.5 * cos(camera_angle);
-      break;
-    case GLUT_KEY_LEFT:
-      camera_angle -= radians_five;
-      break;
-    case GLUT_KEY_RIGHT:
-      camera_angle += radians_five;
-      break;
-    case GLUT_KEY_PAGE_UP:
-      eye_y++;
-      break;
-    case GLUT_KEY_PAGE_DOWN:
-      eye_y--;
-      break;
-    default:
-      break;
+  if (key == GLUT_KEY_HOME) {
+    is_mobile_cam = !is_mobile_cam;
   }
 
-  look_x = eye_x + 100 * sin(camera_angle);
-  look_z = eye_z - 100 * cos(camera_angle);
+  if (is_mobile_cam) {
+    eye_x = &mobile_cam[0];
+    eye_y = &mobile_cam[1];
+    eye_z = &mobile_cam[2];
+    look_x = &mobile_cam[3];
+    look_y = &mobile_cam[4];
+    look_z = &mobile_cam[5];
+    switch (key) {
+      case GLUT_KEY_UP:
+        *eye_x += 0.5 * sin(camera_angle);
+        *eye_z -= 0.5 * cos(camera_angle);
+        break;
+      case GLUT_KEY_DOWN:
+        *eye_x -= 0.5 * sin(camera_angle);
+        *eye_z += 0.5 * cos(camera_angle);
+        break;
+      case GLUT_KEY_LEFT:
+        camera_angle -= radians_five;
+        break;
+      case GLUT_KEY_RIGHT:
+        camera_angle += radians_five;
+        break;
+      case GLUT_KEY_PAGE_UP:
+        (*eye_y)++;
+        break;
+      case GLUT_KEY_PAGE_DOWN:
+        (*eye_y)--;
+        break;
+      default:
+        break;
+    }
+
+    *look_x = *eye_x + 100 * sin(camera_angle);
+    *look_z = *eye_z - 100 * cos(camera_angle);
+  } else {
+    eye_x = &spaceship_cam_ground[0];
+    eye_y = &spaceship_cam_ground[1];
+    eye_z = &spaceship_cam_ground[2];
+    look_x = &spaceship_cam_ground[3];
+    look_y = &spaceship_cam_ground[4];
+    look_z = &spaceship_cam_ground[5];
+  }
 
   glutPostRedisplay();
 }
@@ -245,7 +269,7 @@ static void display(void) {
   glLoadIdentity();
 
   // Camera position and orientation
-  gluLookAt(eye_x, eye_y, eye_z, look_x, look_y, look_z, 0, 1, 0);
+  gluLookAt(*eye_x, *eye_y, *eye_z, *look_x, *look_y, *look_z, 0, 1, 0);
 
   // Sets the light's position
   glLightfv(GL_LIGHT0, GL_POSITION, light_pos);

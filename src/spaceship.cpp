@@ -5,6 +5,8 @@
 float spaceship_altitude = 0.0;
 double spaceship_height = 20.0;
 bool spaceship_flying = false;
+double spaceship_radius = 2.0;
+
 static bool lights_on = true;
 
 /**
@@ -50,20 +52,20 @@ void spaceship(void) {
   glPushMatrix();
   glTranslated(0.0, 4.0, 0.0);
   glRotated(-90.0, 1.0, 0.0, 0.0);
-  glutSolidCylinder(2.0, spaceship_height, 100.0, 100.0);
+  glutSolidCylinder(spaceship_radius, spaceship_height, 100.0, 100.0);
   glPopMatrix();
 
   // Tower root
   glPushMatrix();
   glTranslated(0.0, 4.0 + spaceship_height, 0.0);
   glRotated(-90.0, 1.0, 0.0, 0.0);
-  glutSolidCone(2.0, 6.0, 100.0, 100.0);
+  glutSolidCone(spaceship_radius, 6.0, 100.0, 100.0);
   glPopMatrix();
 
   glPushMatrix();
-  fin(2.0);
-  fin(2.0, 0.0, 0.0, 120.0, 0.0, 1.0, 0.0);
-  fin(2.0, 0.0, 0.0, 240.0, 0.0, 1.0, 0.0);
+  fin(spaceship_radius);
+  fin(spaceship_radius, 0.0, 0.0, 120.0, 0.0, 1.0, 0.0);
+  fin(spaceship_radius, 0.0, 0.0, 240.0, 0.0, 1.0, 0.0);
   glPopMatrix();
 
   if (lights_on) {
