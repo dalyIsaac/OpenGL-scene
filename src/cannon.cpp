@@ -26,8 +26,9 @@ int *cannon_t3;
 
 static double cannon_angle = 15.0;
 static double gradient = tan(cannon_angle * M_PI / 180);
-static double time = 0.0;
-static const double middle = 50.0;
+static double time = ball_z_initial;
+static const double power = 200.0;
+static const double constant = 1 / power;
 
 /**
  * @brief Draws the cannon.
@@ -106,13 +107,14 @@ void cannon(void) {
 }
 
 void cannonBallPhysics(void) {
-  time += 0.1;
-  ball_y = -pow(time, 2.0) + (gradient + 2 * ball_x_initial) * time +
-           ball_y_initial + pow(ball_x_initial, 2.0) -
-           (gradient + 2 * ball_x_initial) * ball_x_initial;
+  time++;
+  double z = time;
+  double reused = gradient + 2 * constant * ball_z_initial;
+  ball_y = -(constant * pow(z, 2.0)) + reused * z + ball_y_initial +
+           constant * pow(ball_z_initial, 2.0) - reused * ball_z_initial;
   if (ball_y <= 0.0) {
     ball_y = 0.0;
   } else {
-    ball_x = time;
+    ball_z = z;
   }
 }
