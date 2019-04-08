@@ -27,7 +27,10 @@ int *cannon_t3;
 static double cannon_angle = 15.0;
 static double gradient = tan(cannon_angle * M_PI / 180);
 static double time = ball_z_initial;
-static const double power = 200.0;
+static double delta_z = 2.0;
+static bool is_rolling = false;
+
+static const double power = 200.0; // increase power -> decrease in constant
 static const double constant = 1 / power;
 
 /**
@@ -107,7 +110,13 @@ void cannon(void) {
 }
 
 void cannonBallPhysics(void) {
-  time++;
+  time += delta_z;
+  if (is_rolling) {
+    delta_z -= 0.05;
+  } else {
+    delta_z -= 0.02;
+  }
+
   double z = time;
   double reused = gradient + 2 * constant * ball_z_initial;
   ball_y = -(constant * pow(z, 2.0)) + reused * z + ball_y_initial +
