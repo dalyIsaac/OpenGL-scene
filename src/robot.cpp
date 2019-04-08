@@ -7,6 +7,9 @@
  *
  */
 void draw_robot(Robot robot) {
+  float light_pos[] = {0.0f, 7.7f, 0.0f, 1.0f};
+  float spot_dir[] = {0.0f, -10.0f, 10.0f, 0.0f};
+
   glPushMatrix();
   glTranslated(robot.rotation_translation_x, robot.rotation_translation_y,
                robot.rotation_translation_z);
@@ -73,6 +76,8 @@ void draw_robot(Robot robot) {
   glutSolidCube(1);
   glPopMatrix();
 
+  glLightfv(robot.light, GL_POSITION, light_pos);
+  glLightfv(robot.light, GL_SPOT_DIRECTION, spot_dir);
   glPopMatrix();
 }
 
@@ -147,29 +152,31 @@ static void robot_1_movement(Robot *robot) {
   }
 }
 
-Robot robots[ROBOTS_LENGTH] = {{
-                                 x : 0.0,
-                                 y : 0.0,
-                                 z : 30.0,
-                                 direction_angle : 0.0,
-                                 limb_angle : 0.0,
-                                 right_leg_moving_forward : true,
-                                 rotation_angle : 0.0,
-                                 rotation_translation_x : 0.0,
-                                 rotation_translation_y : 0.0,
-                                 rotation_translation_z : 0.0,
-                                 movement : robot_0_movement
-                               },
-                               {
-                                 x : 0.0,
-                                 y : 0.0,
-                                 z : 25.0,
-                                 direction_angle : 0.0,
-                                 limb_angle : 0.0,
-                                 right_leg_moving_forward : true,
-                                 rotation_angle : 0.0,
-                                 rotation_translation_x : 0.0,
-                                 rotation_translation_y : 0.0,
-                                 rotation_translation_z : 0.0,
-                                 movement : robot_1_movement
-                               }};
+Robot robots[NUM_ROBOTS] = {{
+                              x : 0.0,
+                              y : 0.0,
+                              z : 30.0,
+                              direction_angle : 0.0,
+                              limb_angle : 0.0,
+                              right_leg_moving_forward : true,
+                              rotation_angle : 0.0,
+                              rotation_translation_x : 0.0,
+                              rotation_translation_y : 0.0,
+                              rotation_translation_z : 0.0,
+                              light : GL_LIGHT3,
+                              movement : robot_0_movement
+                            },
+                            {
+                              x : 0.0,
+                              y : 0.0,
+                              z : 25.0,
+                              direction_angle : 0.0,
+                              limb_angle : 0.0,
+                              right_leg_moving_forward : true,
+                              rotation_angle : 0.0,
+                              rotation_translation_x : 0.0,
+                              rotation_translation_y : 0.0,
+                              rotation_translation_z : 0.0,
+                              light : GL_LIGHT4,
+                              movement : robot_1_movement
+                            }};

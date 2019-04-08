@@ -16,6 +16,7 @@ GLUquadricObj *q;
 
 float red[4] = {1.0f, 0.16f, 0.16f, 1.0f};
 float green[4] = {0.16f, 1.0f, 0.321f, 1.0f};
+float blue[4] = {0.105f, 0.474f, 0.713f, 1.0f};
 
 float lx = 0.0f;
 float ly = 50.0f;
@@ -25,22 +26,14 @@ float shadowMat[16] = {ly, 0, 0, 0, -lx, 0, -lz, -1, 0, 0, ly, 0, 0, 0, 0, ly};
 
 static double radians_five = 0.0872665;
 
-// static double camera_angle = 0;
-static double camera_angle = 1.5707969999999996;
+static double camera_angle = 0;
 
-// static double eye_x = 0.0;
-// static double eye_y = 20.0;
-// static double eye_z = 100.0;
-// static double look_x = 0;
-// static double look_y = 0.0;
-// static double look_z = 1;
-
-static double eye_x = -125.49999999997148;
+static double eye_x = 0.0;
 static double eye_y = 20.0;
-static double eye_z = 99.999915512758989;
-static double look_x = -99.999915512758989;
+static double eye_z = 100.0;
+static double look_x = 0;
 static double look_y = 0.0;
-static double look_z = 99.999982833269286;
+static double look_z = 1;
 
 /**
  * @brief Loads the OFF mesh file.
@@ -142,7 +135,7 @@ static void generalTimer(int value) {
     // ball_y++;
     cannonBallPhysics();
   }
-  for (int i = 0; i < ROBOTS_LENGTH; i++) {
+  for (int i = 0; i < NUM_ROBOTS; i++) {
     Robot *r = &(robots[i]);
     r->movement(r);
   }
@@ -261,7 +254,7 @@ static void display(void) {
   castle();
   cannon();
   spaceship();
-  for (int i = 0; i < ROBOTS_LENGTH; i++) {
+  for (int i = 0; i < NUM_ROBOTS; i++) {
     Robot r = robots[i];
     draw_robot(r);
   }
@@ -284,28 +277,39 @@ static void initialize(void) {
   loadMeshFile("models/Cannon.off");
 
   glEnable(GL_LIGHTING);
-  glEnable(GL_LIGHT0);
-  glEnable(GL_LIGHT1);
-  glEnable(GL_LIGHT2);
 
-  //	Define light's ambient, diffuse, specular properties
+  // General light
+  glEnable(GL_LIGHT0);
   glLightfv(GL_LIGHT0, GL_AMBIENT, grey);
   glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
   glLightfv(GL_LIGHT0, GL_SPECULAR, white);
 
+  // Red light on spaceship
+  glEnable(GL_LIGHT1);
   glLightfv(GL_LIGHT1, GL_AMBIENT, grey);
   glLightfv(GL_LIGHT1, GL_DIFFUSE, red);
   glLightfv(GL_LIGHT1, GL_SPECULAR, red);
-
   glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 60.0);
   glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 100.0);
 
+  // Green light on spaceship
+  glEnable(GL_LIGHT2);
   glLightfv(GL_LIGHT2, GL_AMBIENT, grey);
   glLightfv(GL_LIGHT2, GL_DIFFUSE, green);
   glLightfv(GL_LIGHT2, GL_SPECULAR, green);
-
   glLightf(GL_LIGHT2, GL_SPOT_CUTOFF, 60.0);
   glLightf(GL_LIGHT2, GL_SPOT_EXPONENT, 100.0);
+
+  // Lights for the robots
+  for (int i = 0; i < NUM_ROBOTS; i++) {
+    Robot r = robots[i];
+    glEnable(r.light);
+    glLightfv(r.light, GL_AMBIENT, grey);
+    glLightfv(r.light, GL_DIFFUSE, blue);
+    glLightfv(r.light, GL_SPECULAR, blue);
+    glLightf(r.light, GL_SPOT_CUTOFF, 60.0);
+    glLightf(r.light, GL_SPOT_EXPONENT, 100.0);
+  }
 
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_NORMALIZE);
