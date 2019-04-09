@@ -5,7 +5,7 @@
 float spaceship_altitude = 0.0;
 double spaceship_height = 20.0;
 bool spaceship_flying = false;
-double spaceship_radius = 2.0;
+float spaceship_radius = 2.0;
 
 static bool lights_on = true;
 

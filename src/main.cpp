@@ -26,19 +26,21 @@ float shadowMat[16] = {ly, 0, 0, 0, -lx, 0, -lz, -1, 0, 0, ly, 0, 0, 0, 0, ly};
 
 static double radians_five = 0.0872665;
 
-static double camera_angle = 0;
+static float camera_angle = 0;
 
-static double mobile_cam[6] = {0.0, 20.0, 100.0, 0.0, 0.0, 1.0};
-static double spaceship_cam_ground[6] = {0.0, 18.0, spaceship_radius,
-                                         0.0, 0.0,  45.0};
+static float mobile_cam[6] = {0.0, 20.0, 100.0, 0.0, 0.0, 1.0};
+static float spaceship_cam_ground[6] = {0.0, 18.0, spaceship_radius,
+                                        0.0, 0.0,  45.0};
+static float spaceship_cam_flying[6] = {0.0, spaceship_altitude, 0.0, 0.0, 0.0,
+                                        1.0};
 static bool is_mobile_cam = true;
 
-static double *eye_x = &mobile_cam[0];
-static double *eye_y = &mobile_cam[1];
-static double *eye_z = &mobile_cam[2];
-static double *look_x = &mobile_cam[3];
-static double *look_y = &mobile_cam[4];
-static double *look_z = &mobile_cam[5];
+static float *eye_x = &mobile_cam[0];
+static float *eye_y = &mobile_cam[1];
+static float *eye_z = &mobile_cam[2];
+static float *look_x = &mobile_cam[3];
+static float *look_y = &mobile_cam[4];
+static float *look_z = &mobile_cam[5];
 
 /**
  * @brief Loads the OFF mesh file.
@@ -136,8 +138,6 @@ static void generalTimer(int value) {
     spaceship_altitude++;
   }
   if (ball_fired) {
-    // ball_z++;
-    // ball_y++;
     cannonBallPhysics();
   }
   for (int i = 0; i < NUM_ROBOTS; i++) {
@@ -196,12 +196,21 @@ static void special(int key, int x, int y) {
     *look_x = *eye_x + 100 * sin(camera_angle);
     *look_z = *eye_z - 100 * cos(camera_angle);
   } else {
-    eye_x = &spaceship_cam_ground[0];
-    eye_y = &spaceship_cam_ground[1];
-    eye_z = &spaceship_cam_ground[2];
-    look_x = &spaceship_cam_ground[3];
-    look_y = &spaceship_cam_ground[4];
-    look_z = &spaceship_cam_ground[5];
+    if (spaceship_flying) {
+      eye_x = &spaceship_cam_flying[0];
+      eye_y = &spaceship_altitude;
+      eye_z = &spaceship_cam_flying[2];
+      look_x = &spaceship_cam_flying[3];
+      look_y = &spaceship_cam_flying[4];
+      look_z = &spaceship_cam_flying[5];
+    } else {
+      eye_x = &spaceship_cam_ground[0];
+      eye_y = &spaceship_cam_ground[1];
+      eye_z = &spaceship_cam_ground[2];
+      look_x = &spaceship_cam_ground[3];
+      look_y = &spaceship_cam_ground[4];
+      look_z = &spaceship_cam_ground[5];
+    }
   }
 
   glutPostRedisplay();
@@ -239,8 +248,8 @@ static void floor(void) {
   glColor4f(0.7, 0.7, 0.7, 1.0); // The floor is gray in colour
   glNormal3f(0.0, 1.0, 0.0);
 
-  // The floor is made up of several tiny squares on a 500x500 grid. Each square
-  // has a unit size.
+  // The floor is made up of several tiny squares on a 500x500 grid. Each
+  // square has a unit size.
   glMaterialfv(GL_FRONT, GL_SPECULAR,
                black); // suppresses specular reflections from the floor
   glBegin(GL_QUADS);
@@ -263,6 +272,15 @@ static void floor(void) {
 static void display(void) {
   float spot_pos[] = {-10.0, 14.0, 0.0, 1.0};
   float spot_dir[] = {-10.0, -10.0, 0.0, 0.0};
+
+  if (spaceship_flying && !is_mobile_cam) {
+    eye_x = &spaceship_cam_flying[0];
+    eye_y = &spaceship_altitude;
+    eye_z = &spaceship_cam_flying[2];
+    look_x = &spaceship_cam_flying[3];
+    look_y = &spaceship_cam_flying[4];
+    look_z = &spaceship_cam_flying[5];
+  }
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glMatrixMode(GL_MODELVIEW);
