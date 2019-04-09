@@ -5,3 +5,4 @@ extern float spaceship_radius;
 
 void spaceship(void);
 void spaceshipLightsTimer(int value);
+void spaceshipInit(void);

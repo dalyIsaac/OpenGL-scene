@@ -1,6 +1,7 @@
 #include "spaceship.h"
 #include "main.h"
 #include <GL/freeglut.h>
+#include <cmath>
 
 float spaceship_altitude = 0.0;
 double spaceship_height = 20.0;
@@ -8,6 +9,58 @@ bool spaceship_flying = false;
 float spaceship_radius = 2.0;
 
 static bool lights_on = true;
+
+const int N = 2 + 1; // Total number of vertices on the base curve
+float angle = 25;
+float vx[N] = {0};
+float vy[N] = {0};
+float vz[N] = {0};
+
+static void noseConeInit(void) {
+  for (int i = 0; i < N; i++) {
+    double x = i;
+    vx[i] = x;
+    vy[i] = -(x * x) + spaceship_radius * 2.0;
+  }
+}
+
+void spaceshipInit(void) { noseConeInit(); }
+
+static void cone(void) {
+  float wx[N], wy[N], wz[N];
+  float theta = -0.1745;
+
+  glBegin(GL_TRIANGLE_STRIP);
+  for (int j = 0; j < 36; j++) {
+    for (int i = 0; i < N; i++) {
+      wx[i] = vx[i] * cos(theta) + vz[i] * sin(theta);
+      wy[i] = vy[i];
+      wz[i] = -vx[i] * sin(theta) + vz[i] * cos(theta);
+    }
+
+    for (int i = 0; i < N; i++) {
+      if (i > 0) {
+        normal(wx[i - 1], wy[i - 1], wz[i - 1], vx[i - 1], vy[i - 1], vz[i - 1],
+               vx[i], vy[i], vz[i]);
+      }
+      glTexCoord2f(j / 36.0, i / float(N));
+      glVertex3f(vx[i], vy[i], vz[i]);
+      if (i > 0) {
+        normal(wx[i - 1], wy[i - 1], wz[i - 1], vx[i], vy[i], vz[i], wx[i],
+               wy[i], wz[i]);
+      }
+      glTexCoord2f((j + 1) / 36.0, i / float(N));
+      glVertex3f(wx[i], wy[i], wz[i]);
+    }
+
+    for (int i = 0; i < N; i++) {
+      vx[i] = wx[i];
+      vy[i] = wy[i];
+      vz[i] = wz[i];
+    }
+  }
+  glEnd();
+}
 
 /**
  * @brief Draws a rocket fin.
@@ -55,11 +108,10 @@ void spaceship(void) {
   glutSolidCylinder(spaceship_radius, spaceship_height, 100.0, 100.0);
   glPopMatrix();
 
-  // Tower root
+  // Nose cone
   glPushMatrix();
   glTranslated(0.0, 4.0 + spaceship_height, 0.0);
-  glRotated(-90.0, 1.0, 0.0, 0.0);
-  glutSolidCone(spaceship_radius, 6.0, 100.0, 100.0);
+  cone();
   glPopMatrix();
 
   glPushMatrix();
