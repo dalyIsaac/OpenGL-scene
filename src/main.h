@@ -1,6 +1,6 @@
 #include <GL/freeglut.h>
 
-extern GLuint txId[9];
+extern GLuint txId[8];
 extern GLUquadric *q;
 
 extern float red[4];

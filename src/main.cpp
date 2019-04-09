@@ -11,7 +11,7 @@
 #include <iostream>
 using namespace std;
 
-GLuint txId[9];
+GLuint txId[8];
 GLUquadricObj *q;
 
 float red[4] = {1.0f, 0.16f, 0.16f, 1.0f};
@@ -89,7 +89,7 @@ static void loadMeshFile(const char *fname) {
  *
  */
 static void loadTexture() {
-  glGenTextures(9, txId);
+  glGenTextures(8, txId);
 
   // Wall
   glBindTexture(GL_TEXTURE_2D, txId[0]);
@@ -149,14 +149,6 @@ static void loadTexture() {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-  // Skybox - bottom
-  glBindTexture(GL_TEXTURE_2D, txId[8]);
-  loadTGA("textures/skybox/bottom.tga");
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 }
 
@@ -198,11 +190,38 @@ static void generalTimer(int value) {
   glutTimerFunc(50, generalTimer, 0);
 }
 
+/**
+ * @brief Draws a grid of lines on the floor plane.
+ *
+ */
+static void floor(void) {
+  float white[4] = {1., 1., 1., 1.};
+  float black[4] = {0};
+  glColor4f(0.7, 0.7, 0.7, 1.0); // The floor is gray in colour
+  glNormal3f(0.0, 1.0, 0.0);
+
+  // The floor is made up of several tiny squares on a 500x500 grid. Each
+  // square has a unit size.
+  glMaterialfv(GL_FRONT, GL_SPECULAR,
+               black); // suppresses specular reflections from the floor
+  glBegin(GL_QUADS);
+  for (int i = -500; i < 500; i++) {
+    for (int j = -500; j < 500; j++) {
+      glVertex3f(i, 0, j);
+      glVertex3f(i, 0, j + 1);
+      glVertex3f(i + 1, 0, j + 1);
+      glVertex3f(i + 1, 0, j);
+    }
+  }
+  glEnd();
+  glMaterialfv(GL_FRONT, GL_SPECULAR, white);
+}
+
 void skybox() {
+  floor();
+
   glPushMatrix();
   glEnable(GL_TEXTURE_2D);
-
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
   // Left wall
   glBindTexture(GL_TEXTURE_2D, txId[3]);
@@ -268,28 +287,6 @@ void skybox() {
   glTexCoord2d(0.0, 1.0);
   glVertex3d(-500, 500, 500);
   glEnd();
-
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
-  // Floor
-  glPushMatrix();
-  glBindTexture(GL_TEXTURE_2D, txId[8]);
-
-  glBegin(GL_QUADS);
-  glColor4d(1.0, 1.0, 1.0, 1.0);
-  glNormal3d(0.0, 1.0, 0.0);
-  glTexCoord2d(0.0, 0.0);
-  glVertex3d(-500, 0., 500);
-  glTexCoord2d(1.0, 0.0);
-  glVertex3d(500, 0., 500);
-  glTexCoord2d(1.0, 1.0);
-  glVertex3d(500, 0., -500);
-  glTexCoord2d(0.0, 1.0);
-  glVertex3d(-500, 0., -500);
-  glEnd();
-  glPopMatrix();
-
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
   glPopMatrix();
 }
