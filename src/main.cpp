@@ -29,10 +29,8 @@ static double radians_five = 0.0872665;
 static float camera_angle = 0;
 
 static float mobile_cam[6] = {0.0, 20.0, 100.0, 0.0, 0.0, 1.0};
-static float spaceship_cam_ground[6] = {0.0, 18.0, spaceship_radius,
-                                        0.0, 0.0,  45.0};
-static float spaceship_cam_flying[6] = {0.0, spaceship_altitude, 0.0, 0.0, 0.0,
-                                        1.0};
+static float spaceship_cam[6] = {0.0, 18.0, spaceship_radius, 0.0, 0.0, 45.0};
+
 static bool is_mobile_cam = true;
 
 static float *eye_x = &mobile_cam[0];
@@ -149,6 +147,18 @@ static void generalTimer(int value) {
   glutTimerFunc(50, generalTimer, 0);
 }
 
+static void updateSpaceshipCam(void) {
+  if (spaceship_cam[1] > 10.0 && spaceship_altitude >= spaceship_cam[1]) {
+    spaceship_cam[1] = spaceship_altitude;
+  }
+  eye_x = &spaceship_cam[0];
+  eye_y = &spaceship_cam[1];
+  eye_z = &spaceship_cam[2];
+  look_x = &spaceship_cam[3];
+  look_y = &spaceship_cam[4];
+  look_z = &spaceship_cam[5];
+}
+
 /**
  * @brief Handles keyboard input for special keys.
  *
@@ -196,21 +206,7 @@ static void special(int key, int x, int y) {
     *look_x = *eye_x + 100 * sin(camera_angle);
     *look_z = *eye_z - 100 * cos(camera_angle);
   } else {
-    if (spaceship_flying) {
-      eye_x = &spaceship_cam_flying[0];
-      eye_y = &spaceship_altitude;
-      eye_z = &spaceship_cam_flying[2];
-      look_x = &spaceship_cam_flying[3];
-      look_y = &spaceship_cam_flying[4];
-      look_z = &spaceship_cam_flying[5];
-    } else {
-      eye_x = &spaceship_cam_ground[0];
-      eye_y = &spaceship_cam_ground[1];
-      eye_z = &spaceship_cam_ground[2];
-      look_x = &spaceship_cam_ground[3];
-      look_y = &spaceship_cam_ground[4];
-      look_z = &spaceship_cam_ground[5];
-    }
+    updateSpaceshipCam();
   }
 
   glutPostRedisplay();
@@ -274,12 +270,7 @@ static void display(void) {
   float spot_dir[] = {-10.0, -10.0, 0.0, 0.0};
 
   if (spaceship_flying && !is_mobile_cam) {
-    eye_x = &spaceship_cam_flying[0];
-    eye_y = &spaceship_altitude;
-    eye_z = &spaceship_cam_flying[2];
-    look_x = &spaceship_cam_flying[3];
-    look_y = &spaceship_cam_flying[4];
-    look_z = &spaceship_cam_flying[5];
+    updateSpaceshipCam();
   }
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
