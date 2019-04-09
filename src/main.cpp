@@ -202,88 +202,94 @@ void skybox() {
   glPushMatrix();
   glEnable(GL_TEXTURE_2D);
 
-  // Floor
-  glBindTexture(GL_TEXTURE_2D, txId[8]);
-  glColor3f(0, 1, 1);
-  glBegin(GL_QUADS);
-  glTexCoord2f(0.0, 0.0);
-  glVertex3f(-500, 0., 500);
-  glTexCoord2f(1.0, 0.0);
-  glVertex3f(500, 0., 500);
-  glTexCoord2f(1.0, 1.0);
-  glVertex3f(500, 0., -500);
-  glTexCoord2f(0.0, 1.0);
-  glVertex3f(-500, 0., -500);
-  glEnd();
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
   // Left wall
   glBindTexture(GL_TEXTURE_2D, txId[3]);
   glBegin(GL_QUADS);
-  glTexCoord2f(0.0, 0.0);
-  glVertex3f(-500, 0, 500);
-  glTexCoord2f(1.0, 0.0);
-  glVertex3f(-500, 0., -500);
-  glTexCoord2f(1.0, 1.0);
-  glVertex3f(-500, 500., -500);
-  glTexCoord2f(0.0, 1.0);
-  glVertex3f(-500, 500, 500);
+  glTexCoord2d(0.0, 0.0);
+  glVertex3d(-500, 0, 500);
+  glTexCoord2d(1.0, 0.0);
+  glVertex3d(-500, 0., -500);
+  glTexCoord2d(1.0, 1.0);
+  glVertex3d(-500, 500., -500);
+  glTexCoord2d(0.0, 1.0);
+  glVertex3d(-500, 500, 500);
   glEnd();
 
   // Front wall
   glBindTexture(GL_TEXTURE_2D, txId[4]);
-  glColor3f(0, 1, 0);
   glBegin(GL_QUADS);
-  glTexCoord2f(0.0, 0.0);
-  glVertex3f(-500, 0, -500);
-  glTexCoord2f(1.0, 0.0);
-  glVertex3f(500, 0., -500);
-  glTexCoord2f(1.0, 1.0);
-  glVertex3f(500, 500, -500);
-  glTexCoord2f(0.0, 1.0);
-  glVertex3f(-500, 500, -500);
+  glTexCoord2d(0.0, 0.0);
+  glVertex3d(-500, 0, -500);
+  glTexCoord2d(1.0, 0.0);
+  glVertex3d(500, 0., -500);
+  glTexCoord2d(1.0, 1.0);
+  glVertex3d(500, 500, -500);
+  glTexCoord2d(0.0, 1.0);
+  glVertex3d(-500, 500, -500);
   glEnd();
 
   // Right wall
   glBindTexture(GL_TEXTURE_2D, txId[5]);
-  glColor3f(0, 0, 1);
   glBegin(GL_QUADS);
-  glTexCoord2f(0.0, 0.0);
-  glVertex3f(500, 0, -500);
-  glTexCoord2f(1.0, 0.0);
-  glVertex3f(500, 0, 500);
-  glTexCoord2f(1.0, 1.0);
-  glVertex3f(500, 500, 500);
-  glTexCoord2f(0.0, 1.0);
-  glVertex3f(500, 500, -500);
+  glTexCoord2d(0.0, 0.0);
+  glVertex3d(500, 0, -500);
+  glTexCoord2d(1.0, 0.0);
+  glVertex3d(500, 0, 500);
+  glTexCoord2d(1.0, 1.0);
+  glVertex3d(500, 500, 500);
+  glTexCoord2d(0.0, 1.0);
+  glVertex3d(500, 500, -500);
   glEnd();
 
   // Back wall
   glBindTexture(GL_TEXTURE_2D, txId[6]);
-  glColor3f(1, 1, 0);
   glBegin(GL_QUADS);
-  glTexCoord2f(0.0, 0.0);
-  glVertex3f(500, 0, 500);
-  glTexCoord2f(1.0, 0.0);
-  glVertex3f(-500, 0, 500);
-  glTexCoord2f(1.0, 1.0);
-  glVertex3f(-500, 500, 500);
-  glTexCoord2f(0.0, 1.0);
-  glVertex3f(500, 500, 500);
+  glTexCoord2d(0.0, 0.0);
+  glVertex3d(500, 0, 500);
+  glTexCoord2d(1.0, 0.0);
+  glVertex3d(-500, 0, 500);
+  glTexCoord2d(1.0, 1.0);
+  glVertex3d(-500, 500, 500);
+  glTexCoord2d(0.0, 1.0);
+  glVertex3d(500, 500, 500);
   glEnd();
 
   // Top
   glBindTexture(GL_TEXTURE_2D, txId[7]);
-  glColor3f(1, 0, 1);
   glBegin(GL_QUADS);
-  glTexCoord2f(0.0, 0.0);
-  glVertex3f(-500, 500, -500);
-  glTexCoord2f(1.0, 0.0);
-  glVertex3f(500, 500, -500);
-  glTexCoord2f(1.0, 1.0);
-  glVertex3f(500, 500, 500);
-  glTexCoord2f(0.0, 1.0);
-  glVertex3f(-500, 500, 500);
+  glTexCoord2d(0.0, 0.0);
+  glVertex3d(-500, 500, -500);
+  glTexCoord2d(1.0, 0.0);
+  glVertex3d(500, 500, -500);
+  glTexCoord2d(1.0, 1.0);
+  glVertex3d(500, 500, 500);
+  glTexCoord2d(0.0, 1.0);
+  glVertex3d(-500, 500, 500);
   glEnd();
+
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+  // Floor
+  glPushMatrix();
+  glBindTexture(GL_TEXTURE_2D, txId[8]);
+
+  glBegin(GL_QUADS);
+  glColor4d(1.0, 1.0, 1.0, 1.0);
+  glNormal3d(0.0, 1.0, 0.0);
+  glTexCoord2d(0.0, 0.0);
+  glVertex3d(-500, 0., 500);
+  glTexCoord2d(1.0, 0.0);
+  glVertex3d(500, 0., 500);
+  glTexCoord2d(1.0, 1.0);
+  glVertex3d(500, 0., -500);
+  glTexCoord2d(0.0, 1.0);
+  glVertex3d(-500, 0., -500);
+  glEnd();
+  glPopMatrix();
+
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
   glPopMatrix();
 }
@@ -376,56 +382,24 @@ static void keyboard(unsigned char key, int x, int y) {
 }
 
 /**
- * @brief Draws a grid of lines on the floor plane.
- *
- */
-static void floor(void) {
-  float white[4] = {1., 1., 1., 1.};
-  float black[4] = {0};
-  glColor4f(0.7, 0.7, 0.7, 1.0); // The floor is gray in colour
-  glNormal3f(0.0, 1.0, 0.0);
-
-  // The floor is made up of several tiny squares on a 500x500 grid. Each
-  // square has a unit size.
-
-  // Suppresses specular reflections from the floor
-  glMaterialfv(GL_FRONT, GL_SPECULAR, black);
-  glBegin(GL_QUADS);
-  for (int i = -500; i < 500; i++) {
-    for (int j = -500; j < 500; j++) {
-      glVertex3f(i, 0, j);
-      glVertex3f(i, 0, j + 1);
-      glVertex3f(i + 1, 0, j + 1);
-      glVertex3f(i + 1, 0, j);
-    }
-  }
-  glEnd();
-  glMaterialfv(GL_FRONT, GL_SPECULAR, white);
-}
-
-/**
  * @brief Contains function calls for generating the scene.
  *
  */
 static void display(void) {
   float spot_pos[] = {-10.0, 14.0, 0.0, 1.0};
   float spot_dir[] = {-10.0, -10.0, 0.0, 0.0};
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
 
   if (spaceship_flying && !is_mobile_cam) {
     updateSpaceshipCam();
   }
 
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-
-  // Camera position and orientation
   gluLookAt(*eye_x, *eye_y, *eye_z, *look_x, *look_y, *look_z, 0, 1, 0);
 
-  // Sets the light's position
   glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
 
-  // floor();
   skybox();
   castle();
   cannon();
@@ -451,6 +425,11 @@ static void initialize(void) {
 
   loadTexture();
   loadMeshFile("models/Cannon.off");
+
+  glClearColor(0.0, 0.0, 0.0, 0.0); // Background colour
+  glClearDepth(1.0f);
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_NORMALIZE);
 
   glEnable(GL_LIGHTING);
 
@@ -487,19 +466,16 @@ static void initialize(void) {
     glLightf(r.light, GL_SPOT_EXPONENT, 100.0);
   }
 
-  glEnable(GL_DEPTH_TEST);
-  glEnable(GL_NORMALIZE);
+  glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, white);
+  glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50);
+  glEnable(GL_COLOR_MATERIAL);
+
   gluQuadricDrawStyle(q, GLU_FILL);
-  glClearColor(0.0, 0.0, 0.0, 0.0); // Background colour
+  gluQuadricNormals(q, GLU_SMOOTH);
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-
-  glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-  glEnable(GL_COLOR_MATERIAL);
-
-  glMaterialfv(GL_FRONT, GL_SPECULAR, white);
-  glMaterialf(GL_FRONT, GL_SHININESS, 50);
 
   glFrustum(-5.0, 5.0, -5.0, 5.0, 10.0, 1000.0);
 }
