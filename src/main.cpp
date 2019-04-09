@@ -11,7 +11,7 @@
 #include <iostream>
 using namespace std;
 
-GLuint txId[3]; // Texture ids
+GLuint txId[9];
 GLUquadricObj *q;
 
 float red[4] = {1.0f, 0.16f, 0.16f, 1.0f};
@@ -56,8 +56,8 @@ static void loadMeshFile(const char *fname) {
   }
 
   fp_in.ignore(INT_MAX, '\n'); // ignore first line
-  fp_in >> cannon_num_vertices >> cannon_num_triangles >>
-      ne; // read number of vertices, polygons, edges
+  // read number of vertices, polygons, edges
+  fp_in >> cannon_num_vertices >> cannon_num_triangles >> ne;
 
   x_cannon_mesh = new double[cannon_num_vertices]; // create arrays
   y_cannon_mesh = new double[cannon_num_vertices];
@@ -89,22 +89,73 @@ static void loadMeshFile(const char *fname) {
  *
  */
 static void loadTexture() {
-  glGenTextures(2, txId); // Create 2 texture ids
+  glGenTextures(9, txId);
 
+  // Wall
   glBindTexture(GL_TEXTURE_2D, txId[0]);
   loadTGA("textures/wall.tga");
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+  // Tower
   glBindTexture(GL_TEXTURE_2D, txId[1]);
   loadTGA("textures/tower.tga");
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+  // Roof
   glBindTexture(GL_TEXTURE_2D, txId[2]);
   loadTGA("textures/roof.tga");
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+  // Skybox - left
+  glBindTexture(GL_TEXTURE_2D, txId[3]);
+  loadTGA("textures/skybox/right.tga");
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  // Skybox - front
+  glBindTexture(GL_TEXTURE_2D, txId[4]);
+  loadTGA("textures/skybox/front.tga");
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  // Skybox - right
+  glBindTexture(GL_TEXTURE_2D, txId[5]);
+  loadTGA("textures/skybox/left.tga");
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  // Skybox - back
+  glBindTexture(GL_TEXTURE_2D, txId[6]);
+  loadTGA("textures/skybox/back.tga");
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  // Skybox - top
+  glBindTexture(GL_TEXTURE_2D, txId[7]);
+  loadTGA("textures/skybox/top.tga");
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  // Skybox - bottom
+  glBindTexture(GL_TEXTURE_2D, txId[8]);
+  loadTGA("textures/skybox/bottom.tga");
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 }
@@ -145,6 +196,96 @@ static void generalTimer(int value) {
 
   glutPostRedisplay();
   glutTimerFunc(50, generalTimer, 0);
+}
+
+void skybox() {
+  glPushMatrix();
+  glEnable(GL_TEXTURE_2D);
+
+  // Floor
+  glBindTexture(GL_TEXTURE_2D, txId[8]);
+  glColor3f(0, 1, 1);
+  glBegin(GL_QUADS);
+  glTexCoord2f(0.0, 0.0);
+  glVertex3f(-500, 0., 500);
+  glTexCoord2f(1.0, 0.0);
+  glVertex3f(500, 0., 500);
+  glTexCoord2f(1.0, 1.0);
+  glVertex3f(500, 0., -500);
+  glTexCoord2f(0.0, 1.0);
+  glVertex3f(-500, 0., -500);
+  glEnd();
+
+  // Left wall
+  glBindTexture(GL_TEXTURE_2D, txId[3]);
+  glBegin(GL_QUADS);
+  glTexCoord2f(0.0, 0.0);
+  glVertex3f(-500, 0, 500);
+  glTexCoord2f(1.0, 0.0);
+  glVertex3f(-500, 0., -500);
+  glTexCoord2f(1.0, 1.0);
+  glVertex3f(-500, 500., -500);
+  glTexCoord2f(0.0, 1.0);
+  glVertex3f(-500, 500, 500);
+  glEnd();
+
+  // Front wall
+  glBindTexture(GL_TEXTURE_2D, txId[4]);
+  glColor3f(0, 1, 0);
+  glBegin(GL_QUADS);
+  glTexCoord2f(0.0, 0.0);
+  glVertex3f(-500, 0, -500);
+  glTexCoord2f(1.0, 0.0);
+  glVertex3f(500, 0., -500);
+  glTexCoord2f(1.0, 1.0);
+  glVertex3f(500, 500, -500);
+  glTexCoord2f(0.0, 1.0);
+  glVertex3f(-500, 500, -500);
+  glEnd();
+
+  // Right wall
+  glBindTexture(GL_TEXTURE_2D, txId[5]);
+  glColor3f(0, 0, 1);
+  glBegin(GL_QUADS);
+  glTexCoord2f(0.0, 0.0);
+  glVertex3f(500, 0, -500);
+  glTexCoord2f(1.0, 0.0);
+  glVertex3f(500, 0, 500);
+  glTexCoord2f(1.0, 1.0);
+  glVertex3f(500, 500, 500);
+  glTexCoord2f(0.0, 1.0);
+  glVertex3f(500, 500, -500);
+  glEnd();
+
+  // Back wall
+  glBindTexture(GL_TEXTURE_2D, txId[6]);
+  glColor3f(1, 1, 0);
+  glBegin(GL_QUADS);
+  glTexCoord2f(0.0, 0.0);
+  glVertex3f(500, 0, 500);
+  glTexCoord2f(1.0, 0.0);
+  glVertex3f(-500, 0, 500);
+  glTexCoord2f(1.0, 1.0);
+  glVertex3f(-500, 500, 500);
+  glTexCoord2f(0.0, 1.0);
+  glVertex3f(500, 500, 500);
+  glEnd();
+
+  // Top
+  glBindTexture(GL_TEXTURE_2D, txId[7]);
+  glColor3f(1, 0, 1);
+  glBegin(GL_QUADS);
+  glTexCoord2f(0.0, 0.0);
+  glVertex3f(-500, 500, -500);
+  glTexCoord2f(1.0, 0.0);
+  glVertex3f(500, 500, -500);
+  glTexCoord2f(1.0, 1.0);
+  glVertex3f(500, 500, 500);
+  glTexCoord2f(0.0, 1.0);
+  glVertex3f(-500, 500, 500);
+  glEnd();
+
+  glPopMatrix();
 }
 
 static void updateSpaceshipCam(void) {
@@ -246,8 +387,9 @@ static void floor(void) {
 
   // The floor is made up of several tiny squares on a 500x500 grid. Each
   // square has a unit size.
-  glMaterialfv(GL_FRONT, GL_SPECULAR,
-               black); // suppresses specular reflections from the floor
+
+  // Suppresses specular reflections from the floor
+  glMaterialfv(GL_FRONT, GL_SPECULAR, black);
   glBegin(GL_QUADS);
   for (int i = -500; i < 500; i++) {
     for (int j = -500; j < 500; j++) {
@@ -283,7 +425,8 @@ static void display(void) {
   // Sets the light's position
   glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
 
-  floor();
+  // floor();
+  skybox();
   castle();
   cannon();
   spaceship();
@@ -371,7 +514,7 @@ static void initialize(void) {
 int main(int argc, char **argv) {
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);
-  glutInitWindowSize(1000, 1000);
+  glutInitWindowSize(500, 500);
   glutInitWindowPosition(0, 0);
   glutCreateWindow("COSC363 Assignment 1");
   glutSpecialFunc(special);
