@@ -169,26 +169,26 @@ static void robot_2_movement(Robot *robot) {
   float x = tramp_time - 7.5;
   float y = -((x - 7.5) / tramp_denom) * ((x + 7.5) / tramp_denom);
 
-  float proposed_relative_y = robot->y + (tramp_rising ? y : -y) - wall_height;
+  float proposed_relative_y = robot->y + (tramp_rising ? y : -y) - tramp_y;
   float current_fabric_y = fabric_y[0] * 5.0f;
   if (proposed_relative_y < current_fabric_y) {
-    robot->y = current_fabric_y + wall_height;
+    robot->y = current_fabric_y + tramp_y;
   } else {
-    robot->y = proposed_relative_y + wall_height;
+    robot->y = proposed_relative_y + tramp_y;
   }
 
   if (tramp_rising) {
-    robot->left_leg_angle -= 3;
-    robot->right_leg_angle -= 3;
-
-    robot->left_arm_angle += 12;
-    robot->right_arm_angle += 12;
-  } else {
     robot->left_leg_angle += 3;
     robot->right_leg_angle += 3;
 
     robot->left_arm_angle -= 12;
     robot->right_arm_angle -= 12;
+  } else {
+    robot->left_leg_angle -= 3;
+    robot->right_leg_angle -= 3;
+
+    robot->left_arm_angle += 12;
+    robot->right_arm_angle += 12;
   }
 }
 
@@ -227,14 +227,12 @@ Robot robots[NUM_ROBOTS] = {{
                               movement : robot_1_movement
                             },
                             {
-                              x : 0.0,
-                              y : wall_height,
-                              z : 20.0,
+                              x : tramp_x,
+                              y : tramp_y,
+                              z : tramp_z,
                               direction_angle : 180.0,
-                              // left_leg_angle : 30.0,
-                              // right_leg_angle : 30.0,
-                              left_leg_angle : 0.0,
-                              right_leg_angle : 0.0,
+                              left_leg_angle : 30.0,
+                              right_leg_angle : 30.0,
                               left_arm_angle : 0.0,
                               right_arm_angle : 0.0,
                               right_leg_moving_forward : true,
