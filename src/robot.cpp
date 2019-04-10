@@ -198,7 +198,7 @@ static void robot_2_movement(Robot *robot) {
   float y = -((x - 7.5) / tramp_denom) * ((x + 7.5) / tramp_denom);
 
   float proposed_relative_y = robot->y + (tramp_rising ? y : -y) - tramp_y;
-  float current_fabric_y = fabric_y[0] * 5.0f;
+  float current_fabric_y = (*fabric_y_bottom) * 5.0f;
   if (proposed_relative_y < current_fabric_y) {
     robot->y = current_fabric_y + tramp_y;
   } else {

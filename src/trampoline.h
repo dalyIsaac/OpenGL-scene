@@ -4,9 +4,7 @@ extern const float tramp_x;
 extern const float tramp_y;
 extern const float tramp_z;
 
-static const int fabric_n = 6;
-
-extern float fabric_y[fabric_n];
+extern const float *fabric_y_bottom;
 
 void trampTimer(void);
 void trampoline(void);
