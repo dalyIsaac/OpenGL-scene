@@ -103,19 +103,19 @@ static void wallTop(double wall_height, double half_thick) {
 
   // Left front corner
   glTexCoord2d(0.0, 0.0);
-  glVertex3d(-20.0, wall_height, half_thick);
+  glVertex3d(-40.0, wall_height, half_thick);
 
   // Left back corner
   glTexCoord2d(0.0, tex_height);
-  glVertex3d(-20.0, wall_height, -half_thick);
+  glVertex3d(-40.0, wall_height, -half_thick);
 
   // Right front corner
   glTexCoord2d(8.0, 0.0);
-  glVertex3d(20.0, wall_height, half_thick);
+  glVertex3d(40.0, wall_height, half_thick);
 
   // Right back corner
   glTexCoord2d(8.0, tex_height);
-  glVertex3d(20.0, wall_height, -half_thick);
+  glVertex3d(40.0, wall_height, -half_thick);
   glEnd();
 }
 
@@ -150,14 +150,14 @@ static void castleWall(GLdouble translate_x = 0.0, GLdouble translate_y = 0.0,
 
     // Bottom left corner
     glTexCoord2d(0.0, 0.0);
-    glVertex3d(-20.0, 0.0, i * half_thick);
+    glVertex3d(-40.0, 0.0, i * half_thick);
     // Bottom left-inner corner
     glTexCoord2d(3.0, 0.0);
     glVertex3d(-5.0, 0.0, i * half_thick);
 
     // Top left corner
     glTexCoord2d(0.0, 4.0);
-    glVertex3d(-20.0, wall_height, i * half_thick);
+    glVertex3d(-40.0, wall_height, i * half_thick);
 
     // Left upper-inner corner
     glTexCoord2d(3.0, 2.0);
@@ -165,7 +165,7 @@ static void castleWall(GLdouble translate_x = 0.0, GLdouble translate_y = 0.0,
 
     // Right upper corner
     glTexCoord2d(8.0, 4.0);
-    glVertex3d(20.0, wall_height, i * half_thick);
+    glVertex3d(40.0, wall_height, i * half_thick);
 
     // Right upper-inner corner
     glTexCoord2d(5.0, 2.0);
@@ -173,7 +173,7 @@ static void castleWall(GLdouble translate_x = 0.0, GLdouble translate_y = 0.0,
 
     // Right bottom corner
     glTexCoord2d(8.0, 0.0);
-    glVertex3d(20.0, 0.0, i * half_thick);
+    glVertex3d(40.0, 0.0, i * half_thick);
 
     // Bottom right-inner corner
     glTexCoord2d(5.0, 0.0);
@@ -195,22 +195,22 @@ static void castleWall(GLdouble translate_x = 0.0, GLdouble translate_y = 0.0,
  */
 void castle(void) {
   // Right front tower
-  castleTower(20.0, 0.0, 20.0);
+  castleTower(40.0, 0.0, 40.0);
   // Front
-  castleWall(0.0, 0.0, 20.0);
+  castleWall(0.0, 0.0, 40.0);
   // Left front tower
-  castleTower(-20.0, 0.0, 20.0);
+  castleTower(-40.0, 0.0, 40.0);
 
   // Right back tower
-  castleTower(20.0, 0.0, -20.0);
+  castleTower(40.0, 0.0, -40.0);
   // Back
-  castleWall(0.0, 0.0, -20.0);
+  castleWall(0.0, 0.0, -40.0);
   // Left back tower
-  castleTower(-20.0, 0.0, -20.0);
+  castleTower(-40.0, 0.0, -40.0);
 
   // Right side wall
-  castleWall(20.0, 0.0, 0.0, 90.0, 0.0, 1.0, 0.0);
+  castleWall(40.0, 0.0, 0.0, 90.0, 0.0, 1.0, 0.0);
 
   // Left side wall
-  castleWall(-20.0, 0.0, 0.0, 90.0, 0.0, 1.0, 0.0);
+  castleWall(-40.0, 0.0, 0.0, 90.0, 0.0, 1.0, 0.0);
 }
