@@ -4,6 +4,11 @@
 #include <GL/freeglut.h>
 #include <cmath>
 
+/**
+ * @brief The current denominator used for scaling the y-axis position of robot
+ * 2, who is bouncing on the trampoline.
+ *
+ */
 static const float tramp_denom = 8;
 
 /**
@@ -81,6 +86,13 @@ void draw_robot(Robot robot) {
   glPopMatrix();
 }
 
+/**
+ * @brief Modifies the angles of the limbs of a robot, so that they move in a
+ * symmetrical and human-like fashion.
+ *
+ * @param robot Pointer to the robot, whose limbs' angles will be modified.
+ * @param delta The change in the angle of the robot's limbs' angles.
+ */
 static void symmetrical_robot_limb_movement(Robot *robot, double delta) {
   if (robot->right_leg_angle >= 45.0) {
     robot->right_leg_moving_forward = false;
@@ -100,6 +112,11 @@ static void symmetrical_robot_limb_movement(Robot *robot, double delta) {
   }
 }
 
+/**
+ * @brief Moves robot 0 on a patrol around the exterior of the castle.
+ *
+ * @param robot
+ */
 static void robot_0_movement(Robot *robot) {
   symmetrical_robot_limb_movement(robot, 15.0);
   if (robot->x == 50.0 && robot->z <= 50.0 && robot->z > -50.0) {
@@ -121,6 +138,12 @@ static void robot_0_movement(Robot *robot) {
   }
 }
 
+/**
+ * @brief Moves robot 1 on a patrol around the spaceship, with brief forays
+ * outside of the castle to take a look.
+ *
+ * @param robot
+ */
 static void robot_1_movement(Robot *robot) {
   static RobotMovement movement = RobotMovement::In;
 
@@ -165,6 +188,11 @@ static void robot_1_movement(Robot *robot) {
   }
 }
 
+/**
+ * @brief Dictates the movements of robot 2 so that he bounces on a trampoline.
+ *
+ * @param robot
+ */
 static void robot_2_movement(Robot *robot) {
   float x = tramp_time - 7.5;
   float y = -((x - 7.5) / tramp_denom) * ((x + 7.5) / tramp_denom);
@@ -192,6 +220,10 @@ static void robot_2_movement(Robot *robot) {
   }
 }
 
+/**
+ * @brief Array of ll the robots, and their associated attributes.
+ *
+ */
 Robot robots[NUM_ROBOTS] = {{
                               x : 0.0,
                               y : 0.0,
