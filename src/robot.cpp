@@ -102,19 +102,19 @@ static void symmetrical_robot_limb_movement(Robot *robot, double delta) {
 
 static void robot_0_movement(Robot *robot) {
   symmetrical_robot_limb_movement(robot, 15.0);
-  if (robot->x == 30.0 && robot->z <= 30.0 && robot->z > -30.0) {
+  if (robot->x == 50.0 && robot->z <= 50.0 && robot->z > -50.0) {
     // Move up
     robot->z--;
     robot->direction_angle = 180.0;
-  } else if (robot->x <= 30.0 && robot->x > -30.0 && robot->z == -30.0) {
+  } else if (robot->x <= 50.0 && robot->x > -50.0 && robot->z == -50.0) {
     // Move to the left
     robot->x--;
     robot->direction_angle = 270.0;
-  } else if (robot->x == -30.0 && robot->z >= -30.0 && robot->z < 30.0) {
+  } else if (robot->x == -50.0 && robot->z >= -50.0 && robot->z < 50.0) {
     // Move down
     robot->z++;
     robot->direction_angle = 0.0;
-  } else if (robot->x >= -30.0 && robot->x < 30.0 && robot->z == 30.0) {
+  } else if (robot->x >= -50.0 && robot->x < 50.0 && robot->z == 50.0) {
     // Move to the right
     robot->x++;
     robot->direction_angle = 90.0;
@@ -151,7 +151,7 @@ static void robot_1_movement(Robot *robot) {
     case RobotMovement::Out:
       robot->z += 0.25;
 
-      if (robot->z >= 25.0) {
+      if (robot->z >= 45.0) {
         movement = RobotMovement::ChangingDirection;
       }
       break;
@@ -195,7 +195,7 @@ static void robot_2_movement(Robot *robot) {
 Robot robots[NUM_ROBOTS] = {{
                               x : 0.0,
                               y : 0.0,
-                              z : 30.0,
+                              z : 50.0,
                               direction_angle : 0.0,
                               left_leg_angle : 0.0,
                               right_leg_angle : 0.0,
@@ -212,7 +212,7 @@ Robot robots[NUM_ROBOTS] = {{
                             {
                               x : 0.0,
                               y : 0.0,
-                              z : 25.0,
+                              z : 45.0,
                               direction_angle : 180.0,
                               left_leg_angle : 0.0,
                               right_leg_angle : 0.0,
@@ -231,8 +231,8 @@ Robot robots[NUM_ROBOTS] = {{
                               y : tramp_y,
                               z : tramp_z,
                               direction_angle : 180.0,
-                              left_leg_angle : 30.0,
-                              right_leg_angle : 30.0,
+                              left_leg_angle : -30.0,
+                              right_leg_angle : -30.0,
                               left_arm_angle : 0.0,
                               right_arm_angle : 0.0,
                               right_leg_moving_forward : true,

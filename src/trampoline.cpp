@@ -4,9 +4,9 @@
 #include <GL/freeglut.h>
 #include <cmath>
 
-const float tramp_x = 0.0;
-const float tramp_y = 30.0;
-const float tramp_z = 20.0;
+const float tramp_x = 30.0;
+const float tramp_y = 0.0;
+const float tramp_z = 30.0;
 float tramp_time = 1.0;
 bool tramp_rising = true;
 

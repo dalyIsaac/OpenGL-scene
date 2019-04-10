@@ -8,7 +8,7 @@ bool ball_fired = false;
 static double ball_radius = 0.7;
 double ball_x_initial = 0.0;
 double ball_y_initial = 4.8;
-double ball_z_initial = 54.5;
+double ball_z_initial = 74.5;
 
 double ball_x = ball_x_initial;
 double ball_y = ball_y_initial;
@@ -87,7 +87,7 @@ void _cannon(bool isShadow) {
   }
 
   // Global transitions
-  glTranslated(0.0, 0.0, 50.0);
+  glTranslated(0.0, 0.0, 70.0);
   glRotated(-90.0, 0.0, 1.0, 0.0);
   glScaled(0.1, 0.1, 0.1);
 
