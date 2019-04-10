@@ -169,12 +169,12 @@ static void robot_2_movement(Robot *robot) {
   float x = tramp_time - 7.5;
   float y = -((x - 7.5) / tramp_denom) * ((x + 7.5) / tramp_denom);
 
-  float proposed_y = robot->y + (tramp_rising ? y : -y);
+  float proposed_relative_y = robot->y + (tramp_rising ? y : -y) - wall_height;
   float current_fabric_y = fabric_y[0] * 5.0f;
-  if (proposed_y < current_fabric_y) {
-    robot->y = current_fabric_y;
+  if (proposed_relative_y < current_fabric_y) {
+    robot->y = current_fabric_y + wall_height;
   } else {
-    robot->y = proposed_y;
+    robot->y = proposed_relative_y + wall_height;
   }
 
   if (tramp_rising) {
@@ -231,8 +231,10 @@ Robot robots[NUM_ROBOTS] = {{
                               y : wall_height,
                               z : 20.0,
                               direction_angle : 180.0,
-                              left_leg_angle : 30.0,
-                              right_leg_angle : 30.0,
+                              // left_leg_angle : 30.0,
+                              // right_leg_angle : 30.0,
+                              left_leg_angle : 0.0,
+                              right_leg_angle : 0.0,
                               left_arm_angle : 0.0,
                               right_arm_angle : 0.0,
                               right_leg_moving_forward : true,
