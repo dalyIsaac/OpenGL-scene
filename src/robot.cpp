@@ -1,6 +1,10 @@
 #include "robot.h"
+#include "castle.h"
+#include "trampoline.h"
 #include <GL/freeglut.h>
 #include <cmath>
+
+static const float tramp_denom = 8;
 
 /**
  * @brief Draws a single robot.
@@ -36,9 +40,8 @@ void draw_robot(Robot robot) {
   glColor3d(0.0, 0.0, 1.);
   glPushMatrix();
   glTranslated(-0.8, 4.0, 0);
-  glRotated(-robot.limb_angle, 1, 0, 0);
-  glTranslated(0.8, -4.0, 0);
-  glTranslated(-0.8, 2.2, 0);
+  glRotated(robot.right_leg_angle, 1, 0, 0);
+  glTranslated(0, -1.8, 0);
   glScaled(1, 4.4, 1);
   glutSolidCube(1);
   glPopMatrix();
@@ -47,9 +50,8 @@ void draw_robot(Robot robot) {
   glColor3d(0.0, 0.0, 1.);
   glPushMatrix();
   glTranslated(0.8, 4.0, 0.0);
-  glRotated(robot.limb_angle, 1, 0, 0);
-  glTranslated(-0.8, -4, 0);
-  glTranslated(0.8, 2.2, 0);
+  glRotated(robot.left_leg_angle, 1, 0, 0);
+  glTranslated(0, -1.8, 0);
   glScaled(1, 4.4, 1);
   glutSolidCube(1);
   glPopMatrix();
@@ -58,9 +60,8 @@ void draw_robot(Robot robot) {
   glColor3d(0.0, 0.0, 1.);
   glPushMatrix();
   glTranslated(-2, 6.5, 0);
-  glRotated(robot.limb_angle, 1, 0, 0);
-  glTranslated(2, -6.5, 0);
-  glTranslated(-2, 5, 0);
+  glRotated(robot.right_arm_angle, 1, 0, 0);
+  glTranslated(0, -1.5, 0);
   glScaled(1, 4, 1);
   glutSolidCube(1);
   glPopMatrix();
@@ -69,9 +70,8 @@ void draw_robot(Robot robot) {
   glColor3d(0.0, 0.0, 1.);
   glPushMatrix();
   glTranslated(2, 6.5, 0);
-  glRotated(-robot.limb_angle, 1, 0, 0);
-  glTranslated(-2, -6.5, 0);
-  glTranslated(2, 5, 0);
+  glRotated(robot.left_arm_angle, 1, 0, 0);
+  glTranslated(0, -1.5, 0);
   glScaled(1, 4, 1);
   glutSolidCube(1);
   glPopMatrix();
@@ -81,21 +81,27 @@ void draw_robot(Robot robot) {
   glPopMatrix();
 }
 
-static void robot_limb_movement(Robot *robot, double delta) {
-  if (robot->limb_angle >= 45.0) {
+static void symmetrical_robot_limb_movement(Robot *robot, double delta) {
+  if (robot->right_leg_angle >= 45.0) {
     robot->right_leg_moving_forward = false;
-  } else if (robot->limb_angle <= -45.0) {
+  } else if (robot->right_leg_angle <= -45.0) {
     robot->right_leg_moving_forward = true;
   }
   if (robot->right_leg_moving_forward) {
-    robot->limb_angle += delta;
+    robot->left_leg_angle -= delta;
+    robot->left_arm_angle -= delta;
+    robot->right_leg_angle += delta;
+    robot->right_arm_angle += delta;
   } else {
-    robot->limb_angle -= delta;
+    robot->left_leg_angle += delta;
+    robot->left_arm_angle += delta;
+    robot->right_leg_angle -= delta;
+    robot->right_arm_angle -= delta;
   }
 }
 
 static void robot_0_movement(Robot *robot) {
-  robot_limb_movement(robot, 15.0);
+  symmetrical_robot_limb_movement(robot, 15.0);
   if (robot->x == 30.0 && robot->z <= 30.0 && robot->z > -30.0) {
     // Move up
     robot->z--;
@@ -118,7 +124,7 @@ static void robot_0_movement(Robot *robot) {
 static void robot_1_movement(Robot *robot) {
   static RobotMovement movement = RobotMovement::In;
 
-  robot_limb_movement(robot, 4.0);
+  symmetrical_robot_limb_movement(robot, 4.0);
   switch (movement) {
     case RobotMovement::In:
       robot->z -= 0.25;
@@ -159,12 +165,42 @@ static void robot_1_movement(Robot *robot) {
   }
 }
 
+static void robot_2_movement(Robot *robot) {
+  float x = tramp_time - 7.5;
+  float y = -((x - 7.5) / tramp_denom) * ((x + 7.5) / tramp_denom);
+
+  float proposed_relative_y = robot->y + (tramp_rising ? y : -y) - tramp_y;
+  float current_fabric_y = fabric_y[0] * 5.0f;
+  if (proposed_relative_y < current_fabric_y) {
+    robot->y = current_fabric_y + tramp_y;
+  } else {
+    robot->y = proposed_relative_y + tramp_y;
+  }
+
+  if (tramp_rising) {
+    robot->left_leg_angle += 3;
+    robot->right_leg_angle += 3;
+
+    robot->left_arm_angle -= 12;
+    robot->right_arm_angle -= 12;
+  } else {
+    robot->left_leg_angle -= 3;
+    robot->right_leg_angle -= 3;
+
+    robot->left_arm_angle += 12;
+    robot->right_arm_angle += 12;
+  }
+}
+
 Robot robots[NUM_ROBOTS] = {{
                               x : 0.0,
                               y : 0.0,
                               z : 30.0,
                               direction_angle : 0.0,
-                              limb_angle : 0.0,
+                              left_leg_angle : 0.0,
+                              right_leg_angle : 0.0,
+                              left_arm_angle : 0.0,
+                              right_arm_angle : 0.0,
                               right_leg_moving_forward : true,
                               rotation_angle : 0.0,
                               rotation_translation_x : 0.0,
@@ -178,7 +214,10 @@ Robot robots[NUM_ROBOTS] = {{
                               y : 0.0,
                               z : 25.0,
                               direction_angle : 180.0,
-                              limb_angle : 0.0,
+                              left_leg_angle : 0.0,
+                              right_leg_angle : 0.0,
+                              left_arm_angle : 0.0,
+                              right_arm_angle : 0.0,
                               right_leg_moving_forward : true,
                               rotation_angle : 0.0,
                               rotation_translation_x : 0.0,
@@ -186,4 +225,21 @@ Robot robots[NUM_ROBOTS] = {{
                               rotation_translation_z : 0.0,
                               light : GL_LIGHT4,
                               movement : robot_1_movement
+                            },
+                            {
+                              x : tramp_x,
+                              y : tramp_y,
+                              z : tramp_z,
+                              direction_angle : 180.0,
+                              left_leg_angle : 30.0,
+                              right_leg_angle : 30.0,
+                              left_arm_angle : 0.0,
+                              right_arm_angle : 0.0,
+                              right_leg_moving_forward : true,
+                              rotation_angle : 0.0,
+                              rotation_translation_x : 0.0,
+                              rotation_translation_y : 0.0,
+                              rotation_translation_z : 0.0,
+                              light : GL_LIGHT5,
+                              movement : robot_2_movement
                             }};
