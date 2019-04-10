@@ -1,6 +1,7 @@
 #include "main.h"
 #include "cannon.h"
 #include "castle.h"
+#include "donut.h"
 #include "loadTGA.h"
 #include "robot.h"
 #include "spaceship.h"
@@ -19,9 +20,9 @@ float red[4] = {1.0f, 0.16f, 0.16f, 1.0f};
 float green[4] = {0.16f, 1.0f, 0.321f, 1.0f};
 float yellow[4] = {0.921f, 0.85f, 0.0f, 1.0f};
 
-float lx = 0.0f;
+float lx = -30.0f;
 float ly = 20.0f;
-float lz = 50.0f;
+float lz = 70.0f;
 float light_pos[4] = {lx, ly, lz, 1.0f};
 float shadowMat[16] = {ly, 0, 0, 0, -lx, 0, -lz, -1, 0, 0, ly, 0, 0, 0, 0, ly};
 
@@ -410,6 +411,7 @@ static void display(void) {
 
   glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
 
+  donut();
   trampoline();
   skybox();
   castle();
