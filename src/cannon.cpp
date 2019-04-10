@@ -3,30 +3,119 @@
 #include <GL/freeglut.h>
 #include <cmath>
 
+/**
+ * @brief Indicates if the ball has being fired.
+ *
+ */
 bool ball_fired = false;
 
+/**
+ * @brief The radius of the ball.
+ *
+ */
 static double ball_radius = 0.7;
+
+/**
+ * @brief The initial position of the ball in the x-axis.
+ *
+ */
 double ball_x_initial = 0.0;
+
+/**
+ * @brief The initial position of the ball in the y-axis.
+ *
+ */
 double ball_y_initial = 4.6;
+
+/**
+ * @brief The initial position of the ball in the z-axis.
+ *
+ */
 double ball_z_initial = 74.5;
 
+/**
+ * @brief The current location of the ball in the x-axis.
+ *
+ */
 double ball_x = ball_x_initial;
+
+/**
+ * @brief The current location of the ball in the y-axis.
+ *
+ */
 double ball_y = ball_y_initial;
+
+/**
+ * @brief The current location of the ball in the z-axis.
+ *
+ */
 double ball_z = ball_z_initial;
 
+/**
+ * @brief The number of vertices that the cannon mesh has.
+ *
+ */
 int cannon_num_vertices;
+
+/**
+ * @brief The number of triangles that the cannon mesh has.
+ *
+ */
 int cannon_num_triangles;
 
+/**
+ * @brief Pointer to the cannon mesh array for the x-axis.
+ *
+ */
 double *x_cannon_mesh;
+
+/**
+ * @brief Pointer to the cannon mesh array for the y-axis.
+ *
+ */
 double *y_cannon_mesh;
+
+/**
+ * @brief Pointer to the cannon mesh array for the z-axis.
+ *
+ */
 double *z_cannon_mesh;
 
+/**
+ * @brief Triangles for the cannon mesh.
+ *
+ */
 int *cannon_t1;
+
+/**
+ * @brief Triangles for the cannon mesh.
+ *
+ */
 int *cannon_t2;
+
+/**
+ * @brief Triangles for the cannon mesh.
+ *
+ */
 int *cannon_t3;
 
+/**
+ * @brief The angle of the cannon, in degrees.
+ *
+ */
 static double cannon_angle = 15.0;
+
+/**
+ * @brief The gradient of the line formed by the cannon's current angle.
+ *
+ */
 static double gradient = tan(cannon_angle * M_PI / 180);
+
+/**
+ * @brief The current z-axis value to use for the next calculation for obtaining
+ * the next y-axis value for the ball.
+ *
+ */
 static double time = ball_z_initial;
 static double delta_z = 4.0;
 static double decr = 0.03;
@@ -38,10 +127,10 @@ static const double power = 400.0; // increase power -> decrease in constant
 static const double constant = 1 / power;
 
 /**
- * @brief Draws the cannon.
+ * @brief Draws the cannon using data from the mesh file.
  *
  */
-static void drawCannon(void) {
+static void drawCannonFromMesh(void) {
   glColor3d(0.4, 0.5, 0.4);
 
   glBegin(GL_TRIANGLES);
@@ -79,7 +168,12 @@ static void cannonBall(void) {
   glEnable(GL_LIGHTING);
 }
 
-void _cannon(bool isShadow) {
+/**
+ * @brief Draws a cannon.
+ *
+ * @param isShadow Indicates that the cannon being drawn is a shadow.
+ */
+static void _cannon(bool isShadow) {
   glPushMatrix();
   if (isShadow) {
     glDisable(GL_LIGHTING);
@@ -96,7 +190,7 @@ void _cannon(bool isShadow) {
   glTranslated(-20.0, 30.0, 0);
   glRotated(cannon_angle, 0, 0, 1);
   glTranslated(20.0, -30.0, 0);
-  drawCannon();
+  drawCannonFromMesh();
   glPopMatrix();
 
   // Supports
@@ -143,10 +237,14 @@ void cannon(void) {
   cannonBall();
 }
 
-double getBallY(void) {
-  double z = time;
+/**
+ * @brief Returns the ball's next y-value.
+ *
+ * @return double
+ */
+static double getBallY(void) {
   double reused = gradient + 2 * constant * ball_z_initial;
-  double new_y = -(constant * pow(z, 2.0)) + reused * z + ball_y_initial +
+  double new_y = -(constant * pow(time, 2.0)) + reused * time + ball_y_initial +
                  constant * pow(ball_z_initial, 2.0) - reused * ball_z_initial;
   return new_y;
 }
@@ -157,11 +255,10 @@ double getBallY(void) {
  */
 void cannonBallPhysics(void) {
   time += delta_z;
-  double z = time;
   if (ball_rolling) {
     ball_y = ball_radius;
     delta_z -= decr;
-    ball_z = z;
+    ball_z = time;
     if (delta_z <= 0.0) {
       ball_rolling = false;
       ball_moving = false;
@@ -184,18 +281,16 @@ void cannonBallPhysics(void) {
     if (ball_y <= 0.0) {
       if (ball_ending) {
         ball_rolling = true;
-        ball_z = z;
+        ball_z = time;
       } else {
-        time = ball_z_initial + delta_z;
         ball_z_initial = ball_z + 0.1;
-        if (z > ball_z) {
-          ball_z = z;
-        }
+        time = ball_z_initial + delta_z;
+        ball_z = time;
         ball_y_initial = 0.0;
         ball_y = 0.5;
       }
     } else {
-      ball_z = z;
+      ball_z = time;
     }
   }
 }
