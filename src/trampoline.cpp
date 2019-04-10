@@ -1,3 +1,4 @@
+#include "robot.h"
 #include "sweepSurfaces.h"
 #include <GL/freeglut.h>
 #include <cmath>
@@ -12,10 +13,12 @@ static float fabric_x[fabric_n] = {0, 1, 2, 3, 4, 5};
 static float fabric_y[fabric_n] = {0};
 static float fabric_z[fabric_n] = {0};
 
+static const float denom = 7;
+
 float tramp_time = 1.0;
 bool tramp_rising = true;
 
-void fabric() {
+void fabric(void) {
   float base = pow(tramp_time + 5.0, 2.0);
   float h = base - 25; // time ^ 2 - 5 ^ 2
   for (int x = 0; x < fabric_n; x++) {
@@ -29,11 +32,24 @@ void fabric() {
   glPopMatrix();
 }
 
+static void robotHeight(void) {
+  float x = tramp_time - 7.5;
+  float y = -((x - 7.5) / denom) * ((x + 7.5) / denom);
+
+  if (tramp_rising) {
+    robots[2].y += y;
+  } else {
+    robots[2].y -= y;
+  }
+}
+
 void trampTimer(void) {
   if (tramp_time >= 15.0) {
     tramp_rising = false;
+    tramp_time = 15.0;
   } else if (tramp_time <= 0.0) {
     tramp_rising = true;
+    tramp_time = 0.0;
   }
 
   if (tramp_rising) {
@@ -41,6 +57,8 @@ void trampTimer(void) {
   } else {
     tramp_time--;
   }
+
+  robotHeight();
 }
 
 void trampoline(void) {
