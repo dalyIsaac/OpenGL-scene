@@ -3,7 +3,10 @@ typedef struct robot_props {
   double y;
   double z;
   double direction_angle;
-  double limb_angle;
+  double left_leg_angle;
+  double right_leg_angle;
+  double left_arm_angle;
+  double right_arm_angle;
   bool right_leg_moving_forward;
   double rotation_angle;
   double rotation_translation_x;
