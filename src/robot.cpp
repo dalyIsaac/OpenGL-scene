@@ -1,4 +1,5 @@
 #include "robot.h"
+#include "castle.h"
 #include "trampoline.h"
 #include <GL/freeglut.h>
 #include <cmath>
@@ -227,8 +228,8 @@ Robot robots[NUM_ROBOTS] = {{
                             },
                             {
                               x : 0.0,
-                              y : 0.0,
-                              z : -60.0,
+                              y : wall_height,
+                              z : 20.0,
                               direction_angle : 180.0,
                               left_leg_angle : 30.0,
                               right_leg_angle : 30.0,

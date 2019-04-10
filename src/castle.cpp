@@ -2,6 +2,11 @@
 #include "main.h"
 #include <GL/freeglut.h>
 
+double const wall_height = 30.0;
+static const double wall_thickness = 6.0;
+static const double half_height = wall_height / 2;
+static const double half_thick = wall_thickness / 2;
+
 /**
  * @brief Draws a castle tower, and moves it to the given location.
  *
@@ -130,10 +135,6 @@ static void castleWall(GLdouble translate_x = 0.0, GLdouble translate_y = 0.0,
                        GLdouble translate_z = 0.0, GLdouble angle = 0.0,
                        GLdouble rotate_x = 0.0, GLdouble rotate_y = 0.0,
                        GLdouble rotate_z = 0.0) {
-  double wall_height = 30.0;
-  double wall_thickness = 6.0;
-  double half_height = wall_height / 2;
-  double half_thick = wall_thickness / 2;
 
   glPushMatrix();
   glEnable(GL_TEXTURE_2D);

@@ -1,4 +1,5 @@
 #include "trampoline.h"
+#include "castle.h"
 #include "sweepSurfaces.h"
 #include <GL/freeglut.h>
 #include <cmath>
@@ -49,7 +50,7 @@ void trampTimer(void) {
 
 void trampoline(void) {
   glPushMatrix();
-  glTranslated(0.0, 0.0, -60.0);
+  glTranslated(0.0, wall_height, 20.0);
 
   // Tramp base
   sweepSurface(base_n, base_x, base_y, base_z);

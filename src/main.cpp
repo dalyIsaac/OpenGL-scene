@@ -20,7 +20,7 @@ float green[4] = {0.16f, 1.0f, 0.321f, 1.0f};
 float blue[4] = {0.105f, 0.474f, 0.713f, 1.0f};
 
 float lx = 0.0f;
-float ly = 50.0f;
+float ly = 80.0f;
 float lz = 50.0f;
 float light_pos[4] = {lx, ly, lz, 1.0f};
 float shadowMat[16] = {ly, 0, 0, 0, -lx, 0, -lz, -1, 0, 0, ly, 0, 0, 0, 0, ly};
@@ -29,7 +29,7 @@ static double radians_five = 0.0872665;
 
 static float camera_angle = 0;
 
-static float mobile_cam[6] = {0.0, 10.0, -80.0, 0.0, 0.0, 1.0};
+static float mobile_cam[6] = {0.0, 10.0, 100.0, 0.0, 0.0, 1.0};
 static float spaceship_cam[6] = {0.0, 18.0, spaceship_radius, 0.0, 0.0, 45.0};
 
 static bool is_mobile_cam = true;
