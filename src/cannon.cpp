@@ -68,15 +68,17 @@ static void cannonBall(void) {
   glutSolidSphere(ball_radius, 36, 18);
   glPopMatrix();
 
-  // Shadow cannonball
-  glDisable(GL_LIGHTING);
-  glPushMatrix();
-  glMultMatrixf(shadowMat);
-  glTranslated(ball_x, ball_y, ball_z);
-  glColor4f(0.2, 0.2, 0.2, 1.0);
-  glutSolidSphere(ball_radius, 36, 18);
-  glPopMatrix();
-  glEnable(GL_LIGHTING);
+  if (ball_y > 0.0) {
+    // Shadow cannonball
+    glDisable(GL_LIGHTING);
+    glPushMatrix();
+    glMultMatrixf(shadowMat);
+    glTranslated(ball_x, ball_y, ball_z);
+    glColor4f(0.2, 0.2, 0.2, 1.0);
+    glutSolidSphere(ball_radius, 36, 18);
+    glPopMatrix();
+    glEnable(GL_LIGHTING);
+  }
 }
 
 void _cannon(bool isShadow) {
