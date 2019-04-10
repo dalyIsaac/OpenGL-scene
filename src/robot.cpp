@@ -1,6 +1,9 @@
 #include "robot.h"
+#include "trampoline.h"
 #include <GL/freeglut.h>
 #include <cmath>
+
+static const float tramp_denom = 8;
 
 /**
  * @brief Draws a single robot.
@@ -155,7 +158,18 @@ static void robot_1_movement(Robot *robot) {
   }
 }
 
-void robot_2_movement(Robot *robot) {}
+static void robot_2_movement(Robot *robot) {
+  float x = tramp_time - 7.5;
+  float y = -((x - 7.5) / tramp_denom) * ((x + 7.5) / tramp_denom);
+
+  float proposed_y = robot->y + (tramp_rising ? y : -y);
+  float current_fabric_y = fabric_y[0] * 5.0f;
+  if (proposed_y < current_fabric_y) {
+    robot->y = current_fabric_y;
+  } else {
+    robot->y = proposed_y;
+  }
+}
 
 Robot robots[NUM_ROBOTS] = {{
                               x : 0.0,
