@@ -96,7 +96,7 @@ static float mobile_cam[6] = {0.0, 10.0, 100.0, 0.0, 0.0, 1.0};
  * @brief The current position of the camera attached to the spaceship.
  *
  */
-static float spaceship_cam[6] = {0.0, 18.0, spaceship_radius, 0.0, 0.0, 45.0};
+static float spaceship_cam[6] = {0.0, 18.0, fuselage_radius, 0.0, 0.0, 45.0};
 
 /**
  * @brief Indicates if the current camera is the mobile camera. If it is not, it

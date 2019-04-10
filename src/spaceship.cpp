@@ -4,27 +4,78 @@
 #include <GL/freeglut.h>
 #include <cmath>
 
+/**
+ * @brief The current altitude of the spaceship.
+ *
+ */
 float spaceship_altitude = 0.0;
-double spaceship_height = 20.0;
-bool spaceship_flying = false;
-float spaceship_radius = 2.0;
 
+/**
+ * @brief The height of the spaceship's fuselage.
+ *
+ */
+double fuselage_height = 20.0;
+
+/**
+ * @brief The radius of the spaceship's fuselage.
+ *
+ */
+float fuselage_radius = 2.0;
+
+/**
+ * @brief True if the spaceship is flying.
+ *
+ */
+bool spaceship_flying = false;
+
+/**
+ * @brief Toggled by the timer, to indicate whether the spaceship's navigational
+ * lights are on.
+ *
+ */
 static bool lights_on = true;
 
-const int N = 2 + 1; // Total number of vertices on the base curve
-float angle = 25;
+/**
+ * @brief The number of vertices inside the base curve for the spaceship's nose
+ * cone.
+ *
+ */
+const int N = 2 + 1;
+
+/**
+ * @brief x-axis components of the nose cone.
+ *
+ */
 float x_points[N] = {0};
+
+/**
+ * @brief y-axis components of the nose cone.
+ *
+ */
 float y_points[N] = {0};
+
+/**
+ * @brief z-axis components of the nose cone.
+ *
+ */
 float z_points[N] = {0};
 
+/**
+ * @brief Initializes the values for the nose cone.
+ *
+ */
 static void noseConeInit(void) {
   for (int i = 0; i < N; i++) {
     double x = i;
     x_points[i] = x;
-    y_points[i] = -(x * x) + spaceship_radius * 2.0;
+    y_points[i] = -(x * x) + fuselage_radius * 2.0;
   }
 }
 
+/**
+ * @brief Initializes the spaceship.
+ *
+ */
 void spaceshipInit(void) { noseConeInit(); }
 
 /**
@@ -70,19 +121,19 @@ void spaceship(void) {
   glPushMatrix();
   glTranslated(0.0, 4.0, 0.0);
   glRotated(-90.0, 1.0, 0.0, 0.0);
-  glutSolidCylinder(spaceship_radius, spaceship_height, 100.0, 100.0);
+  glutSolidCylinder(fuselage_radius, fuselage_height, 100.0, 100.0);
   glPopMatrix();
 
   // Nose cone
   glPushMatrix();
-  glTranslated(0.0, 4.0 + spaceship_height, 0.0);
+  glTranslated(0.0, 4.0 + fuselage_height, 0.0);
   sweepSurface(N, x_points, y_points, z_points);
   glPopMatrix();
 
   glPushMatrix();
-  fin(spaceship_radius);
-  fin(spaceship_radius, 0.0, 0.0, 120.0, 0.0, 1.0, 0.0);
-  fin(spaceship_radius, 0.0, 0.0, 240.0, 0.0, 1.0, 0.0);
+  fin(fuselage_radius);
+  fin(fuselage_radius, 0.0, 0.0, 120.0, 0.0, 1.0, 0.0);
+  fin(fuselage_radius, 0.0, 0.0, 240.0, 0.0, 1.0, 0.0);
   glPopMatrix();
 
   if (lights_on) {
@@ -123,6 +174,12 @@ void spaceship(void) {
   glPopMatrix();
 }
 
+/**
+ * @brief Timer for the navigational lights of the spaceship. Runs every 500
+ * milliseconds.
+ *
+ * @param value
+ */
 void spaceshipLightsTimer(int value) {
   lights_on = !lights_on;
   glutPostRedisplay();
