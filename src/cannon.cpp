@@ -111,12 +111,6 @@ static double cannon_angle = 15.0;
  */
 static double gradient = tan(cannon_angle * M_PI / 180);
 
-/**
- * @brief The current z-axis value to use for the next calculation for obtaining
- * the next y-axis value for the ball.
- *
- */
-static double time = ball_z_initial;
 static double delta_z = 4.0;
 static double decr = 0.03;
 static bool ball_moving = true;
@@ -244,8 +238,9 @@ void cannon(void) {
  */
 static double getBallY(void) {
   double reused = gradient + 2 * constant * ball_z_initial;
-  double new_y = -(constant * pow(time, 2.0)) + reused * time + ball_y_initial +
-                 constant * pow(ball_z_initial, 2.0) - reused * ball_z_initial;
+  double new_y = -(constant * pow(ball_z, 2.0)) + reused * ball_z +
+                 ball_y_initial + constant * pow(ball_z_initial, 2.0) -
+                 reused * ball_z_initial;
   return new_y;
 }
 
@@ -254,11 +249,10 @@ static double getBallY(void) {
  *
  */
 void cannonBallPhysics(void) {
-  time += delta_z;
+  ball_z += delta_z;
   if (ball_rolling) {
     ball_y = ball_radius;
     delta_z -= decr;
-    ball_z = time;
     if (delta_z <= 0.0) {
       ball_rolling = false;
       ball_moving = false;
@@ -281,16 +275,12 @@ void cannonBallPhysics(void) {
     if (ball_y <= 0.0) {
       if (ball_ending) {
         ball_rolling = true;
-        ball_z = time;
       } else {
         ball_z_initial = ball_z + 0.1;
-        time = ball_z_initial + delta_z;
-        ball_z = time;
+        ball_z = ball_z_initial + delta_z;
         ball_y_initial = 0.0;
         ball_y = 0.5;
       }
-    } else {
-      ball_z = time;
     }
   }
 }
