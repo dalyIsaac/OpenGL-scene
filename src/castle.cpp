@@ -2,9 +2,28 @@
 #include "main.h"
 #include <GL/freeglut.h>
 
+/**
+ * @brief The height of the walls.
+ *
+ */
 double const wall_height = 30.0;
+
+/**
+ * @brief The thickness of the walls.
+ *
+ */
 static const double wall_thickness = 6.0;
+
+/**
+ * @brief Half of the wall's height.
+ *
+ */
 static const double half_height = wall_height / 2;
+
+/**
+ * @brief Half of the wall's thickness.
+ *
+ */
 static const double half_thick = wall_thickness / 2;
 
 /**
