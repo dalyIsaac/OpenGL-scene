@@ -13,7 +13,7 @@ static float fabric_x[fabric_n] = {0, 1, 2, 3, 4, 5};
 static float fabric_y[fabric_n] = {0};
 static float fabric_z[fabric_n] = {0};
 
-static const float denom = 7;
+static const float denom = 8;
 
 float tramp_time = 1.0;
 bool tramp_rising = true;
@@ -36,10 +36,12 @@ static void robotHeight(void) {
   float x = tramp_time - 7.5;
   float y = -((x - 7.5) / denom) * ((x + 7.5) / denom);
 
-  if (tramp_rising) {
-    robots[2].y += y;
+  float proposed_y = robots[2].y + (tramp_rising ? y : -y);
+  float current_fabric_y = fabric_y[0] * 5.0f;
+  if (proposed_y < current_fabric_y) {
+    robots[2].y = current_fabric_y;
   } else {
-    robots[2].y -= y;
+    robots[2].y = proposed_y;
   }
 }
 
