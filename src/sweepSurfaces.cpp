@@ -2,6 +2,15 @@
 #include <GL/freeglut.h>
 #include <cmath>
 
+/**
+ * @brief Draws a sweep surface, using the given array of the components for the
+ * x, y, and z-axes.
+ *
+ * @param num_vertices The number of vertices in the x, y, and z-axis arrays.
+ * @param x The x-axis components for the vertices of the sweep surface.
+ * @param y The y-axis components for the vertices of the sweep surface.
+ * @param z The z-axis components for the vertices of the sweep surface.
+ */
 void sweepSurface(int num_vertices, float x[], float y[], float z[]) {
   float wx[num_vertices], wy[num_vertices], wz[num_vertices];
   float theta = -0.1745;
