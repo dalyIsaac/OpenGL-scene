@@ -111,13 +111,50 @@ static double cannon_angle = 15.0;
  */
 static double gradient = tan(cannon_angle * M_PI / 180);
 
+/**
+ * @brief The next change to be applied to `ball_z`.
+ *
+ */
 static double delta_z = 4.0;
+
+/**
+ * @brief The amount that `delta_z` is going to be decremented by.
+ *
+ */
 static double decr = 0.03;
+
+/**
+ * @brief Indicates if the cannonball is moving, after the cannon has fired.
+ * Should be ignored before the cannon has being fired (i.e. if `ball_moving` is
+ * true, but the cannon hasn't been fired, then it should be ignored).
+ *
+ */
 static bool ball_moving = true;
+
+/**
+ * @brief Indicates that the ball is bouncing for the last time. After its next
+ * impact with the ground, it will start rolling.
+ *
+ */
 static bool ball_ending = false;
+
+/**
+ * @brief Indicates if the ball is currently rolling along the ground.
+ *
+ */
 static bool ball_rolling = false;
 
+/**
+ * @brief The power value for the cannon.
+ *
+ */
 static const double power = 400.0; // increase power -> decrease in constant
+
+/**
+ * @brief The constant which is used inside the cannonball's physics model. If
+ * there's an increase in power, the constant decreases.
+ *
+ */
 static const double constant = 1 / power;
 
 /**
@@ -144,7 +181,7 @@ static void drawCannonFromMesh(void) {
  * @brief Draws the cannonball, and its shadow.
  *
  */
-static void cannonBall(void) {
+static void cannonball(void) {
   // Cannonball
   glPushMatrix();
   glTranslated(ball_x, ball_y + 0.2, ball_z);
@@ -228,7 +265,7 @@ void cannon(void) {
   _cannon(true);
   _cannon(false);
 
-  cannonBall();
+  cannonball();
 }
 
 /**
@@ -248,7 +285,7 @@ static double getBallY(void) {
  * @brief Defines the behavior of the cannonball.
  *
  */
-void cannonBallPhysics(void) {
+void cannonballPhysics(void) {
   ball_z += delta_z;
   if (ball_rolling) {
     ball_y = ball_radius;
@@ -270,7 +307,6 @@ void cannonBallPhysics(void) {
       ball_ending = true;
     }
 
-    float temp = ball_y;
     ball_y = getBallY();
     if (ball_y <= 0.0) {
       if (ball_ending) {

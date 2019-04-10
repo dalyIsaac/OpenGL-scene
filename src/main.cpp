@@ -191,7 +191,7 @@ static void generalTimer(int value) {
     spaceship_altitude++;
   }
   if (ball_fired) {
-    cannonBallPhysics();
+    cannonballPhysics();
   }
   for (int i = 0; i < NUM_ROBOTS; i++) {
     Robot *r = &(robots[i]);
