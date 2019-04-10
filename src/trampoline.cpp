@@ -8,7 +8,7 @@ static float base_y[base_n] = {0, 5};
 static float base_z[base_n] = {0};
 
 static const int fabric_n = 6;
-static float fabric_x[fabric_n] = {0};
+static float fabric_x[fabric_n] = {0, 1, 2, 3, 4, 5};
 static float fabric_y[fabric_n] = {0};
 static float fabric_z[fabric_n] = {0};
 
@@ -18,10 +18,8 @@ bool tramp_rising = true;
 void fabric() {
   float base = pow(tramp_time + 5.0, 2.0);
   float h = base - 25; // time ^ 2 - 5 ^ 2
-  for (int i = 0; i < fabric_n; i++) {
-    float x = i;
-    fabric_x[i] = x;
-    fabric_y[i] = (x * x + h) / base;
+  for (int x = 0; x < fabric_n; x++) {
+    fabric_y[x] = (x * x + h) / base;
   }
 
   glPushMatrix();
@@ -32,7 +30,7 @@ void fabric() {
 }
 
 void trampTimer(void) {
-  if (tramp_time > 15.0) {
+  if (tramp_time >= 15.0) {
     tramp_rising = false;
   } else if (tramp_time <= 0.0) {
     tramp_rising = true;

@@ -29,7 +29,7 @@ static double radians_five = 0.0872665;
 
 static float camera_angle = 0;
 
-static float mobile_cam[6] = {0.0, 20.0, 100.0, 0.0, 0.0, 1.0};
+static float mobile_cam[6] = {0.0, 0.0, -80.0, 0.0, 0.0, 1.0};
 static float spaceship_cam[6] = {0.0, 18.0, spaceship_radius, 0.0, 0.0, 45.0};
 
 static bool is_mobile_cam = true;
