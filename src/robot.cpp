@@ -37,8 +37,7 @@ void draw_robot(Robot robot) {
   glPushMatrix();
   glTranslated(-0.8, 4.0, 0);
   glRotated(-robot.limb_angle, 1, 0, 0);
-  glTranslated(0.8, -4.0, 0);
-  glTranslated(-0.8, 2.2, 0);
+  glTranslated(0, -1.8, 0);
   glScaled(1, 4.4, 1);
   glutSolidCube(1);
   glPopMatrix();
@@ -48,8 +47,7 @@ void draw_robot(Robot robot) {
   glPushMatrix();
   glTranslated(0.8, 4.0, 0.0);
   glRotated(robot.limb_angle, 1, 0, 0);
-  glTranslated(-0.8, -4, 0);
-  glTranslated(0.8, 2.2, 0);
+  glTranslated(0, -1.8, 0);
   glScaled(1, 4.4, 1);
   glutSolidCube(1);
   glPopMatrix();
@@ -59,8 +57,7 @@ void draw_robot(Robot robot) {
   glPushMatrix();
   glTranslated(-2, 6.5, 0);
   glRotated(robot.limb_angle, 1, 0, 0);
-  glTranslated(2, -6.5, 0);
-  glTranslated(-2, 5, 0);
+  glTranslated(0, -1.5, 0);
   glScaled(1, 4, 1);
   glutSolidCube(1);
   glPopMatrix();
@@ -70,8 +67,7 @@ void draw_robot(Robot robot) {
   glPushMatrix();
   glTranslated(2, 6.5, 0);
   glRotated(-robot.limb_angle, 1, 0, 0);
-  glTranslated(-2, -6.5, 0);
-  glTranslated(2, 5, 0);
+  glTranslated(0, -1.5, 0);
   glScaled(1, 4, 1);
   glutSolidCube(1);
   glPopMatrix();
@@ -159,6 +155,8 @@ static void robot_1_movement(Robot *robot) {
   }
 }
 
+void robot_2_movement(Robot *robot) {}
+
 Robot robots[NUM_ROBOTS] = {{
                               x : 0.0,
                               y : 0.0,
@@ -186,4 +184,18 @@ Robot robots[NUM_ROBOTS] = {{
                               rotation_translation_z : 0.0,
                               light : GL_LIGHT4,
                               movement : robot_1_movement
+                            },
+                            {
+                              x : 0.0,
+                              y : 0.0,
+                              z : -60.0,
+                              direction_angle : 180.0,
+                              limb_angle : 0.0,
+                              right_leg_moving_forward : true,
+                              rotation_angle : 0.0,
+                              rotation_translation_x : 0.0,
+                              rotation_translation_y : 0.0,
+                              rotation_translation_z : 0.0,
+                              light : GL_LIGHT5,
+                              movement : robot_2_movement
                             }};

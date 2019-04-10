@@ -15,7 +15,7 @@ typedef struct robot_props {
 
 void draw_robot(Robot robot);
 
-const int NUM_ROBOTS = 2;
+const int NUM_ROBOTS = 3;
 
 extern Robot robots[NUM_ROBOTS];
 

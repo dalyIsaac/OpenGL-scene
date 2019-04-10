@@ -4,6 +4,7 @@
 #include "loadTGA.h"
 #include "robot.h"
 #include "spaceship.h"
+#include "trampoline.h"
 #include <GL/freeglut.h>
 #include <climits>
 #include <cmath>
@@ -195,6 +196,8 @@ static void generalTimer(int value) {
     Robot *r = &(robots[i]);
     r->movement(r);
   }
+
+  trampTimer();
 
   glutPostRedisplay();
   glutTimerFunc(50, generalTimer, 0);
@@ -407,6 +410,7 @@ static void display(void) {
 
   glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
 
+  trampoline();
   skybox();
   castle();
   cannon();
