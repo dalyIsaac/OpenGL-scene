@@ -502,7 +502,7 @@ static void initialize(void) {
 int main(int argc, char **argv) {
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);
-  glutInitWindowSize(500, 500);
+  glutInitWindowSize(1000, 1000);
   glutInitWindowPosition(0, 0);
   glutCreateWindow("COSC363 Assignment 1");
   glutSpecialFunc(special);

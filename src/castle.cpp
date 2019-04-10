@@ -151,8 +151,9 @@ static void castleWall(GLdouble translate_x = 0.0, GLdouble translate_y = 0.0,
     // Bottom left corner
     glTexCoord2d(0.0, 0.0);
     glVertex3d(-40.0, 0.0, i * half_thick);
+
     // Bottom left-inner corner
-    glTexCoord2d(3.0, 0.0);
+    glTexCoord2d(3.5, 0.0);
     glVertex3d(-5.0, 0.0, i * half_thick);
 
     // Top left corner
@@ -160,7 +161,7 @@ static void castleWall(GLdouble translate_x = 0.0, GLdouble translate_y = 0.0,
     glVertex3d(-40.0, wall_height, i * half_thick);
 
     // Left upper-inner corner
-    glTexCoord2d(3.0, 2.0);
+    glTexCoord2d(3.5, 2.0);
     glVertex3d(-5.0, half_height, i * half_thick);
 
     // Right upper corner
@@ -168,7 +169,7 @@ static void castleWall(GLdouble translate_x = 0.0, GLdouble translate_y = 0.0,
     glVertex3d(40.0, wall_height, i * half_thick);
 
     // Right upper-inner corner
-    glTexCoord2d(5.0, 2.0);
+    glTexCoord2d(4.5, 2.0);
     glVertex3d(5.0, half_height, i * half_thick);
 
     // Right bottom corner
@@ -176,7 +177,7 @@ static void castleWall(GLdouble translate_x = 0.0, GLdouble translate_y = 0.0,
     glVertex3d(40.0, 0.0, i * half_thick);
 
     // Bottom right-inner corner
-    glTexCoord2d(5.0, 0.0);
+    glTexCoord2d(4.5, 0.0);
     glVertex3d(5.0, 0.0, i * half_thick);
     glEnd();
   }
