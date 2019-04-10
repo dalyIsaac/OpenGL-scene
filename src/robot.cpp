@@ -151,7 +151,7 @@ static void robot_1_movement(Robot *robot) {
     case RobotMovement::Out:
       robot->z += 0.25;
 
-      if (robot->z >= 25.0) {
+      if (robot->z >= 45.0) {
         movement = RobotMovement::ChangingDirection;
       }
       break;
@@ -212,7 +212,7 @@ Robot robots[NUM_ROBOTS] = {{
                             {
                               x : 0.0,
                               y : 0.0,
-                              z : 25.0,
+                              z : 45.0,
                               direction_angle : 180.0,
                               left_leg_angle : 0.0,
                               right_leg_angle : 0.0,
