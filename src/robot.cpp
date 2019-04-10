@@ -175,6 +175,20 @@ static void robot_2_movement(Robot *robot) {
   } else {
     robot->y = proposed_y;
   }
+
+  if (tramp_rising) {
+    robot->left_leg_angle -= 3;
+    robot->right_leg_angle -= 3;
+
+    robot->left_arm_angle += 12;
+    robot->right_arm_angle += 12;
+  } else {
+    robot->left_leg_angle += 3;
+    robot->right_leg_angle += 3;
+
+    robot->left_arm_angle -= 12;
+    robot->right_arm_angle -= 12;
+  }
 }
 
 Robot robots[NUM_ROBOTS] = {{
@@ -216,8 +230,8 @@ Robot robots[NUM_ROBOTS] = {{
                               y : 0.0,
                               z : -60.0,
                               direction_angle : 180.0,
-                              left_leg_angle : 0.0,
-                              right_leg_angle : 0.0,
+                              left_leg_angle : 30.0,
+                              right_leg_angle : 30.0,
                               left_arm_angle : 0.0,
                               right_arm_angle : 0.0,
                               right_leg_moving_forward : true,
