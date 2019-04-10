@@ -13,33 +13,132 @@
 #include <iostream>
 using namespace std;
 
+/**
+ * @brief Array of the texture ids.
+ *
+ */
 GLuint txId[8];
+
+/**
+ * @brief Pointer to the quadric's object used to render various quadric
+ * surfaces.
+ *
+ */
 GLUquadricObj *q;
 
-float red[4] = {1.0f, 0.16f, 0.16f, 1.0f};
-float green[4] = {0.16f, 1.0f, 0.321f, 1.0f};
-float yellow[4] = {0.921f, 0.85f, 0.0f, 1.0f};
+/**
+ * @brief Array of the normalized values for a shade of red.
+ *
+ */
+const float red[4] = {1.0f, 0.16f, 0.16f, 1.0f};
 
-float lx = -30.0f;
-float ly = 20.0f;
-float lz = 70.0f;
-float light_pos[4] = {lx, ly, lz, 1.0f};
-float shadowMat[16] = {ly, 0, 0, 0, -lx, 0, -lz, -1, 0, 0, ly, 0, 0, 0, 0, ly};
+/**
+ * @brief Array of the normalized values for a shade of grey.
+ *
+ */
+const float green[4] = {0.16f, 1.0f, 0.321f, 1.0f};
 
-static double radians_five = 0.0872665;
+/**
+ * @brief Array of the normalized values for a shade of yellow.
+ *
+ */
+const float yellow[4] = {0.921f, 0.85f, 0.0f, 1.0f};
 
+/**
+ * @brief The x-axis component of `GL_LIGHT0`'s position.
+ *
+ */
+const float lx = -30.0f;
+
+/**
+ * @brief The y-axis component of `GL_LIGHT0`'s position.
+ *
+ */
+const float ly = 20.0f;
+
+/**
+ * @brief The z-axis component of `GL_LIGHT0`'s position.
+ *
+ */
+const float lz = 70.0f;
+
+/**
+ * @brief `GL_LIGHT0`'s position.
+ *
+ */
+const float light_pos[4] = {lx, ly, lz, 1.0f};
+
+/**
+ * @brief Used to compute shadows based on `GL_LIGHT0`.
+ *
+ */
+float shadow_mat[16] = {ly, 0, 0, 0, -lx, 0, -lz, -1, 0, 0, ly, 0, 0, 0, 0, ly};
+
+/**
+ * @brief 5 degrees in radians.
+ *
+ */
+static const double five_degrees = 5.0 * M_PI / 180;
+
+/**
+ * @brief The current camera angle.
+ *
+ */
 static float camera_angle = 0;
 
+/**
+ * @brief The current position of the mobile camera.
+ *
+ */
 static float mobile_cam[6] = {0.0, 10.0, 100.0, 0.0, 0.0, 1.0};
+
+/**
+ * @brief The current position of the camera attached to the spaceship.
+ *
+ */
 static float spaceship_cam[6] = {0.0, 18.0, spaceship_radius, 0.0, 0.0, 45.0};
 
+/**
+ * @brief Indicates if the current camera is the mobile camera. If it is not, it
+ * is the spaceship camera.
+ *
+ */
 static bool is_mobile_cam = true;
 
+/**
+ * @brief Pointer to the current `eye_x` value.
+ *
+ */
 static float *eye_x = &mobile_cam[0];
+
+/**
+ * @brief Pointer to the current `eye_y` value.
+ *
+ */
 static float *eye_y = &mobile_cam[1];
+
+/**
+ * @brief Pointer to the current `eye_z` value.
+ *
+ */
 static float *eye_z = &mobile_cam[2];
+
+/**
+ * @brief Pointer to the current `look_x` value.
+ *
+ */
 static float *look_x = &mobile_cam[3];
+
+/**
+ * @brief Pointer to the current `look_y` value.
+ *
+ */
 static float *look_y = &mobile_cam[4];
+
+/**
+ * @brief Pointer to the current `look_z` value.
+ *
+ */
 static float *look_z = &mobile_cam[5];
 
 /**
@@ -87,10 +186,10 @@ static void loadMeshFile(const char *fname) {
 }
 
 /**
- * @brief Loads the brick texture.
+ * @brief Loads all textures used inside the scene.
  *
  */
-static void loadTexture() {
+static void loadTextures() {
   glGenTextures(8, txId);
 
   // Wall
@@ -176,6 +275,19 @@ void normal(int tindx) {
   glNormal3d(nx, ny, nz);
 }
 
+/**
+ * @brief Calculates the normal vector for a triangle strip.
+ *
+ * @param x1
+ * @param y1
+ * @param z1
+ * @param x2
+ * @param y2
+ * @param z2
+ * @param x3
+ * @param y3
+ * @param z3
+ */
 void normal(float x1, float y1, float z1, float x2, float y2, float z2,
             float x3, float y3, float z3) {
   float nx, ny, nz;
@@ -186,6 +298,11 @@ void normal(float x1, float y1, float z1, float x2, float y2, float z2,
   glNormal3f(nx, ny, nz);
 }
 
+/**
+ * @brief General timer, used for most timer-based events.
+ *
+ * @param value
+ */
 static void generalTimer(int value) {
   if (spaceship_flying) {
     spaceship_altitude++;
@@ -231,7 +348,11 @@ static void floor(void) {
   glMaterialfv(GL_FRONT, GL_SPECULAR, white);
 }
 
-void skybox() {
+/**
+ * @brief Draws the skybox, and the floor.
+ *
+ */
+void skybox(void) {
   floor();
 
   glPushMatrix();
@@ -305,10 +426,18 @@ void skybox() {
   glPopMatrix();
 }
 
+/**
+ * @brief Updates the spaceship's camera, based on the spaceship's current
+ * y-axis position.
+ *
+ */
 static void updateSpaceshipCam(void) {
+  // Moves the spaceship's camera move to the bottom of the spaceship during
+  // takeoff.
   if (spaceship_cam[1] > 10.0 && spaceship_altitude >= spaceship_cam[1]) {
     spaceship_cam[1] = spaceship_altitude;
   }
+  // Sets the current camera to the spaceship camera.
   eye_x = &spaceship_cam[0];
   eye_y = &spaceship_cam[1];
   eye_z = &spaceship_cam[2];
@@ -318,11 +447,52 @@ static void updateSpaceshipCam(void) {
 }
 
 /**
+ * @brief Updates the mobile camera, based on the keyboard input.
+ *
+ * @param key The key which was just entered by the user.
+ */
+static void updateMobileCam(int key) {
+  eye_x = &mobile_cam[0];
+  eye_y = &mobile_cam[1];
+  eye_z = &mobile_cam[2];
+  look_x = &mobile_cam[3];
+  look_y = &mobile_cam[4];
+  look_z = &mobile_cam[5];
+  switch (key) {
+    case GLUT_KEY_UP:
+      *eye_x += 0.5 * sin(camera_angle);
+      *eye_z -= 0.5 * cos(camera_angle);
+      break;
+    case GLUT_KEY_DOWN:
+      *eye_x -= 0.5 * sin(camera_angle);
+      *eye_z += 0.5 * cos(camera_angle);
+      break;
+    case GLUT_KEY_LEFT:
+      camera_angle -= five_degrees;
+      break;
+    case GLUT_KEY_RIGHT:
+      camera_angle += five_degrees;
+      break;
+    case GLUT_KEY_PAGE_UP:
+      (*eye_y)++;
+      break;
+    case GLUT_KEY_PAGE_DOWN:
+      (*eye_y)--;
+      break;
+    default:
+      break;
+  }
+
+  *look_x = *eye_x + 100 * sin(camera_angle);
+  *look_z = *eye_z - 100 * cos(camera_angle);
+}
+
+/**
  * @brief Handles keyboard input for special keys.
  *
- * @param key
- * @param x
- * @param y
+ * @param key The key which was just entered by the user.
+ * @param x The x-axis position of where this event was called.
+ * @param y The y-axis position of where this event was called.
  */
 static void special(int key, int x, int y) {
   if (key == GLUT_KEY_HOME) {
@@ -330,39 +500,7 @@ static void special(int key, int x, int y) {
   }
 
   if (is_mobile_cam) {
-    eye_x = &mobile_cam[0];
-    eye_y = &mobile_cam[1];
-    eye_z = &mobile_cam[2];
-    look_x = &mobile_cam[3];
-    look_y = &mobile_cam[4];
-    look_z = &mobile_cam[5];
-    switch (key) {
-      case GLUT_KEY_UP:
-        *eye_x += 0.5 * sin(camera_angle);
-        *eye_z -= 0.5 * cos(camera_angle);
-        break;
-      case GLUT_KEY_DOWN:
-        *eye_x -= 0.5 * sin(camera_angle);
-        *eye_z += 0.5 * cos(camera_angle);
-        break;
-      case GLUT_KEY_LEFT:
-        camera_angle -= radians_five;
-        break;
-      case GLUT_KEY_RIGHT:
-        camera_angle += radians_five;
-        break;
-      case GLUT_KEY_PAGE_UP:
-        (*eye_y)++;
-        break;
-      case GLUT_KEY_PAGE_DOWN:
-        (*eye_y)--;
-        break;
-      default:
-        break;
-    }
-
-    *look_x = *eye_x + 100 * sin(camera_angle);
-    *look_z = *eye_z - 100 * cos(camera_angle);
+    updateMobileCam(key);
   } else {
     updateSpaceshipCam();
   }
@@ -373,9 +511,9 @@ static void special(int key, int x, int y) {
 /**
  * @brief Handles keyboard input for non-special keys.
  *
- * @param key
- * @param x
- * @param y
+ * @param key The key which was just entered by the user.
+ * @param x The x-axis position of where this event was called.
+ * @param y The y-axis position of where this event was called.
  */
 static void keyboard(unsigned char key, int x, int y) {
   switch (key) {
@@ -436,7 +574,7 @@ static void initialize(void) {
   q = gluNewQuadric();
   gluQuadricTexture(q, GL_TRUE);
 
-  loadTexture();
+  loadTextures();
   loadMeshFile("models/Cannon.off");
   spaceshipInit();
 

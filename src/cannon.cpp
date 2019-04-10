@@ -191,7 +191,7 @@ static void cannonball(void) {
   // Shadow cannonball
   glDisable(GL_LIGHTING);
   glPushMatrix();
-  glMultMatrixf(shadowMat);
+  glMultMatrixf(shadow_mat);
   glTranslated(ball_x, ball_y, ball_z);
   glColor4f(0.2, 0.2, 0.2, 1.0);
   glutSolidSphere(ball_radius, 36, 18);
@@ -208,7 +208,7 @@ static void _cannon(bool isShadow) {
   glPushMatrix();
   if (isShadow) {
     glDisable(GL_LIGHTING);
-    glMultMatrixf(shadowMat);
+    glMultMatrixf(shadow_mat);
   }
 
   // Global transitions
