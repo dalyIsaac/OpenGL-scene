@@ -7,7 +7,7 @@ bool ball_fired = false;
 
 static double ball_radius = 0.7;
 double ball_x_initial = 0.0;
-double ball_y_initial = 4.8;
+double ball_y_initial = 4.6;
 double ball_z_initial = 74.5;
 
 double ball_x = ball_x_initial;
@@ -64,7 +64,7 @@ static void drawCannon(void) {
 static void cannonBall(void) {
   // Cannonball
   glPushMatrix();
-  glTranslated(ball_x, ball_y, ball_z);
+  glTranslated(ball_x, ball_y + 0.2, ball_z);
   glutSolidSphere(ball_radius, 36, 18);
   glPopMatrix();
 
@@ -145,6 +145,14 @@ void cannon(void) {
   cannonBall();
 }
 
+double getBallY(void) {
+  double z = time;
+  double reused = gradient + 2 * constant * ball_z_initial;
+  double new_y = -(constant * pow(z, 2.0)) + reused * z + ball_y_initial +
+                 constant * pow(ball_z_initial, 2.0) - reused * ball_z_initial;
+  return new_y;
+}
+
 /**
  * @brief Defines the behavior of the cannonball.
  *
@@ -173,17 +181,20 @@ void cannonBallPhysics(void) {
       ball_ending = true;
     }
 
-    double reused = gradient + 2 * constant * ball_z_initial;
-    ball_y = -(constant * pow(z, 2.0)) + reused * z + ball_y_initial +
-             constant * pow(ball_z_initial, 2.0) - reused * ball_z_initial;
+    float temp = ball_y;
+    ball_y = getBallY();
     if (ball_y <= 0.0) {
       if (ball_ending) {
         ball_rolling = true;
         ball_z = z;
       } else {
-        time = ball_z_initial;
-        ball_y_initial = 0;
-        ball_z_initial = ball_z;
+        time = ball_z_initial + delta_z;
+        ball_z_initial = ball_z + 0.1;
+        if (z > ball_z) {
+          ball_z = z;
+        }
+        ball_y_initial = 0.0;
+        ball_y = 0.5;
       }
     } else {
       ball_z = z;
