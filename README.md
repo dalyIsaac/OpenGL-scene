@@ -2,7 +2,7 @@
 
 GitHub: https://github.com/dalyIsaac/COSC363-Assignment-1
 
-The source code for the following project is for a assignment for COSC363 Computer Graphics, at the University of Canterbury, in Semester 1 2019.
+This project was for the first assignment for COSC363 Computer Graphics, at the University of Canterbury, in Semester 1 2019.
 
 The specifications for the assignment can be found in [`./specifications.pdf`](./specifications.pdf).
 
