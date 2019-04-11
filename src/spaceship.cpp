@@ -109,9 +109,9 @@ static void fin(GLdouble translate_x = 0.0, GLdouble translate_y = 0.0,
  *
  */
 void spaceship(void) {
-  float red_pos[] = {-2.0f, 14.0f + spaceship_altitude, 0.0f, 1.0f};
+  float red_pos[] = {-2.0f, 14.0f, 0.0f, 1.0f};
   float red_spot_dir[] = {-10.0f, -10.0f, 0.0f, 0.0f};
-  float green_pos[] = {2.0f, 14.0f + spaceship_altitude, 0.0f, 1.0f};
+  float green_pos[] = {2.0f, 14.0f, 0.0f, 1.0f};
   float green_spot_dir[] = {10.0f, -10.0f, 0.0f, 0.0f};
 
   glPushMatrix();
