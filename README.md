@@ -1,5 +1,13 @@
 # COSC363-Assignment-1
 
+GitHub: https://github.com/dalyIsaac/COSC363-Assignment-1
+
+The source code for the following project is for a assignment for COSC363 Computer Graphics, at the University of Canterbury, in Semester 1 2019.
+
+The specifications for the assignment can be found in [`./specifications.pdf`](./specifications.pdf).
+
+The report for the assignment can be found in [`./report.pdf`](./report.pdf).
+
 ## Building
 
 This guide assumes that `g++` is present on the machine, and that the computer is running Linux (Ubuntu 18.04). This may or may not work for other distributions or operating systems.
