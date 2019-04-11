@@ -304,7 +304,7 @@ void normal(float x1, float y1, float z1, float x2, float y2, float z2,
  * @param value
  */
 static void generalTimer(int value) {
-  if (spaceship_flying) {
+  if (spaceship_flying && spaceship_altitude <= 500.0) {
     spaceship_altitude++;
   }
   if (ball_fired) {
