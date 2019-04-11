@@ -22,6 +22,6 @@ The following assumes that CMake is present on the machine.
 
 From the project root, run:
 
-``` shell
+``` console
 user@domain:~/path/to/project/COSC363-Assignment-1$ ./build.sh
 ```
