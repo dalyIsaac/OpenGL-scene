@@ -101,14 +101,14 @@ static void symmetrical_robot_limb_movement(Robot *robot, double delta) {
   }
   if (robot->right_leg_moving_forward) {
     robot->left_leg_angle -= delta;
-    robot->left_arm_angle -= delta;
+    robot->left_arm_angle += delta;
     robot->right_leg_angle += delta;
-    robot->right_arm_angle += delta;
+    robot->right_arm_angle -= delta;
   } else {
     robot->left_leg_angle += delta;
-    robot->left_arm_angle += delta;
+    robot->left_arm_angle -= delta;
     robot->right_leg_angle -= delta;
-    robot->right_arm_angle -= delta;
+    robot->right_arm_angle += delta;
   }
 }
 
