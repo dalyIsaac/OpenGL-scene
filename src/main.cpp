@@ -304,8 +304,12 @@ void normal(float x1, float y1, float z1, float x2, float y2, float z2,
  * @param value
  */
 static void generalTimer(int value) {
-  if (spaceship_flying && spaceship_altitude <= 500.0) {
-    spaceship_altitude++;
+  if (spaceship_flying) {
+    if (spaceship_altitude < 500.0) {
+      spaceship_altitude++;
+    } else {
+      spaceship_altitude = 499.0;
+    }
   }
   if (ball_fired) {
     cannonballPhysics();
@@ -447,6 +451,24 @@ static void updateSpaceshipCam(void) {
 }
 
 /**
+ * @brief Ensures that the camera does not travel outside the skybox.
+ *
+ */
+static void collisionDetection(void) {
+  for (int i = 0; i < 3; i++) {
+    if (mobile_cam[i] > 494.0) {
+      mobile_cam[i] = 494.0;
+    } else if (mobile_cam[i] < -494.0) {
+      mobile_cam[i] = -494.0;
+    }
+  }
+
+  if (*eye_y < 6.0) {
+    *eye_y = 6.0;
+  }
+}
+
+/**
  * @brief Updates the mobile camera, based on the keyboard input.
  *
  * @param key The key which was just entered by the user.
@@ -485,6 +507,8 @@ static void updateMobileCam(int key) {
 
   *look_x = *eye_x + 100 * sin(camera_angle);
   *look_z = *eye_z - 100 * cos(camera_angle);
+
+  collisionDetection();
 }
 
 /**
