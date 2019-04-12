@@ -11,4 +11,4 @@ g++ -c -o build_sh/trampoline.o src/trampoline.cpp
 
 g++ -o program.out build_sh/cannon.o build_sh/castle.o build_sh/donut.o build_sh/main.o build_sh/robot.o build_sh/spaceship.o build_sh/sweepSurfaces.o build_sh/trampoline.o -lm -lGL -lGLU -lglut
 
-program.out
+./program.out
