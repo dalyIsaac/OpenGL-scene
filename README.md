@@ -33,3 +33,11 @@ From the project root, run:
 ``` console
 user@domain:~/path/to/project/COSC363-Assignment-1$ ./build.sh
 ```
+
+## Screenshots
+
+![Picture of the exterior of the castle](screenshots/screenshot1.png)
+
+![Picture of the interior of the castle](screenshots/screenshot2.png)
+
+![Close-up of the robot on the trampoline](screenshots/screenshot3.png)
